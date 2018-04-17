@@ -2,9 +2,17 @@ package com.kudubisa.app.navdrawertemplate;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +31,10 @@ import android.widget.Toast;
 import com.kudubisa.app.navdrawertemplate.fragment.DatePickerFragment;
 import com.kudubisa.app.navdrawertemplate.model.LoginCredentials;
 import com.kudubisa.app.navdrawertemplate.model.User;
+import com.kudubisa.app.navdrawertemplate.remote.AndroidMultiPartEntity;
+import com.kudubisa.app.navdrawertemplate.remote.Common;
 import com.kudubisa.app.navdrawertemplate.remote.MyHTTPRequest;
+import com.kudubisa.app.navdrawertemplate.remote.UploadToServer;
 import com.mobsandgeeks.saripaar.DateFormats;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -32,10 +43,16 @@ import com.mobsandgeeks.saripaar.annotation.Min;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
 
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +62,10 @@ import java.util.List;
  */
 
 public class EditProfileActivity extends AppCompatActivity {
+
+    int PICK_IMAGE_REQUEST=1;
+    Uri filePath=null;
+    private Bitmap mImageBitmap;
 
     private final static String LOGIN_PREFS = "login_prefs";
     private final static String EMAIL = "email";
@@ -75,23 +96,34 @@ public class EditProfileActivity extends AppCompatActivity {
 
     ProgressBar progressBar;
 
+    ImageView fotoProfile;
+
     View view;
+
+    Context context;
+
+    Common common;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        context = getApplicationContext();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Edit Profile");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        common = new Common();
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         tvBirthdate = (TextView) findViewById(R.id.tvBirthdate);
         tvPregnancyStart = (TextView) findViewById(R.id.tvPregnancyStart);
         TextView tvEditFotoProfile = (TextView) findViewById(R.id.edit_foto_profile);
+        fotoProfile = (ImageView) findViewById(R.id.foto_profile);
 
         RelativeLayout relEditAddress = (RelativeLayout) findViewById(R.id.rel_edit_address);
         RelativeLayout relEditEmail = (RelativeLayout) findViewById(R.id.rel_edit_email);
@@ -154,6 +186,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     datePickerFragment.show(getFragmentManager(), "datePicker");
                     break;
                 case R.id.edit_foto_profile:
+                    showGalleryIntent();
                     break;
                 case R.id.btnSaveProfile:
                     validator.validate();
@@ -239,8 +272,9 @@ public class EditProfileActivity extends AppCompatActivity {
     };
 
     private void ifFormValid(){
-//        Toast.makeText(this, "Data is valid", Toast.LENGTH_SHORT).show();
-        saveProfile();
+        String realPath = common.getRealPathFromURI(filePath, context);
+        uploadFotoProfile(realPath);
+        //saveProfile(); will be executed if upload photo to server is success
     }
 
     private String getUserRaw(){
@@ -255,6 +289,10 @@ public class EditProfileActivity extends AppCompatActivity {
         editor.commit();
     }
 
+    /**
+     * Get Profile
+     * @return JSONObject
+     */
     private JSONObject getProfile(){
         JSONObject user;
         try {
@@ -298,4 +336,82 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         }
     };
+
+    /**
+     * Show the gallery intent, picking picture for profile
+     */
+    public void showGalleryIntent(){
+        Intent mIntent = new Intent();
+        mIntent.setType("image/*");
+        mIntent.setAction(Intent.ACTION_PICK);
+        startActivityForResult(Intent.createChooser(mIntent,"Select Picture"),PICK_IMAGE_REQUEST);
+    }
+
+    /**
+     * This is a callback, for showGalleryIntent().
+     * It will set the fotoProfile ImageView with the new picture from gallery.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==PICK_IMAGE_REQUEST && resultCode==RESULT_OK && data !=null && data.getData() != null){
+            filePath = data.getData();
+            try {
+                mImageBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(),
+                        data.getData());
+                fotoProfile.setImageBitmap(mImageBitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    /**
+     * Upload Foto Profile to Server
+     * @param mFilePath
+     */
+    private void uploadFotoProfile(String mFilePath){
+        AndroidMultiPartEntity entity = new AndroidMultiPartEntity(
+                new AndroidMultiPartEntity.ProgressListener() {
+
+                    @Override
+                    public void transferred(long num) {}
+                });
+
+        JSONObject userJson = getProfile();
+        String apiToken = "";
+        String id = "";
+        try {
+            apiToken = userJson.getString("api_token");
+            id = userJson.getString("id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        File sourceFile = new File(mFilePath);
+        // Adding file data to http body
+        try {
+            entity.addPart("image", new FileBody(sourceFile));
+            entity.addPart("id", new StringBody(id));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("api_token", apiToken);
+
+        UploadToServer uploadToServer = new UploadToServer(progressBar, entity, new UploadToServer.ResultUpload() {
+            @Override
+            public void resultUploadExecute(String result) {
+//                saveProfile();
+                Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            }
+        }, "/user/"+id+"upload-photo?api_token="+apiToken);
+        uploadToServer.execute();
+    }
+
+
 }

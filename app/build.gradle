@@ -33,6 +33,10 @@ dependencies {
     //Saripar
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
 
+    compile files('libs/apache-httpcomponents-httpclient.jar')
+    compile files('libs/apache-httpcomponents-httpcore.jar')
+    compile files('libs/apache-httpcomponents-httpmime.jar')
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
