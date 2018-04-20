@@ -102,10 +102,10 @@ public class LoginActivity extends AppCompatActivity {
         public void response(String body, View view) {
             try {
                 JSONObject jsonObject = new JSONObject(body);
-                String userJsonRaw = jsonObject.getString("user");
-                JSONObject userObejct = new JSONObject(userJsonRaw);
-                Toast.makeText(getApplicationContext(),"Welcome "+userObejct.getString("first_name"), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Welcome "+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                 if (jsonObject.getBoolean("error")==false){
+                    String userJsonRaw = jsonObject.getString("user");
+//                    JSONObject userObejct = new JSONObject(userJsonRaw);
                     modifyPreferences(userJsonRaw);
                     ifLoginSuccess();
                 }

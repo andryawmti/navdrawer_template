@@ -1,5 +1,6 @@
 package com.kudubisa.app.navdrawertemplate;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -8,12 +9,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.kudubisa.app.navdrawertemplate.fragment.DatePickerFragment;
 import com.kudubisa.app.navdrawertemplate.model.LoginCredentials;
 import com.kudubisa.app.navdrawertemplate.model.User;
@@ -62,6 +68,8 @@ import java.util.List;
  */
 
 public class EditProfileActivity extends AppCompatActivity {
+
+    private static final int STORAGE_PERMISSION_CODE=123;
 
     int PICK_IMAGE_REQUEST=1;
     Uri filePath=null;
@@ -153,6 +161,7 @@ public class EditProfileActivity extends AppCompatActivity {
         validator.setValidationListener(validationListener);
 
         setDataField();
+
     }
 
     private void setDataField(){
@@ -160,12 +169,15 @@ public class EditProfileActivity extends AppCompatActivity {
         try {
             tvBirthdate.setText(userJson.getString("birth_date").substring(0,10));
             tvPregnancyStart.setText(userJson.getString("pregnancy_start_at").substring(0,10));
-
             etFirstName.setText( userJson.getString("first_name"));
             etLastName.setText(userJson.getString("last_name"));
             etWeight.setText(String.valueOf(userJson.getInt("weight")));
             etAddress.setText(userJson.getString("address"));
             etEmail.setText(userJson.getString("email"));
+            String photoUrl = common.getFullUrl(userJson.getString("photo"));
+            Glide.with(context)
+                    .load(photoUrl)
+                    .into(fotoProfile);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -186,6 +198,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     datePickerFragment.show(getFragmentManager(), "datePicker");
                     break;
                 case R.id.edit_foto_profile:
+                    requestStoragePermission();
                     showGalleryIntent();
                     break;
                 case R.id.btnSaveProfile:
@@ -274,7 +287,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private void ifFormValid(){
         String realPath = common.getRealPathFromURI(filePath, context);
         uploadFotoProfile(realPath);
-        //saveProfile(); will be executed if upload photo to server is success
     }
 
     private String getUserRaw(){
@@ -400,18 +412,43 @@ public class EditProfileActivity extends AppCompatActivity {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
-        Log.d("api_token", apiToken);
-
+        String url = "/api/user/"+id+"/upload-photo?api_token="+apiToken;
         UploadToServer uploadToServer = new UploadToServer(progressBar, entity, new UploadToServer.ResultUpload() {
             @Override
             public void resultUploadExecute(String result) {
-//                saveProfile();
                 Toast.makeText(context, result, Toast.LENGTH_LONG).show();
             }
-        }, "/user/"+id+"upload-photo?api_token="+apiToken);
+        }, url);
+        Log.d("url", url);
         uploadToServer.execute();
     }
 
+    //Requesting permission to access the Storage
+    private void requestStoragePermission(){
+        if(ContextCompat.checkSelfPermission(context,
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            return;
+        }
+
+        if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_EXTERNAL_STORAGE)){
+
+
+        }
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                STORAGE_PERMISSION_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==STORAGE_PERMISSION_CODE){
+            if(grantResults.length>0&&grantResults[0] == PackageManager.PERMISSION_DENIED){
+                Toast.makeText(context,"Permission denied",Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(context,"Permission Granted", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
 }

@@ -10,6 +10,8 @@ import android.provider.MediaStore;
  */
 
 public class Common {
+    private static final String HOST = "http://dev2.dadadasnoopdog.com";
+
     public String getRealPathFromURI(Uri contentURI, Context context) {
         String result;
         Cursor cursor = context.getContentResolver().query(contentURI, null, null, null, null);
@@ -22,5 +24,13 @@ public class Common {
             cursor.close();
         }
         return result;
+    }
+
+    public String getHost(){
+        return HOST;
+    }
+
+    public String getFullUrl(String url){
+        return HOST+url;
     }
 }
