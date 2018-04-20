@@ -78,7 +78,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private final static String LOGIN_PREFS = "login_prefs";
     private final static String EMAIL = "email";
     private final static  String USER_RAW = "userRaw";
-    private String updateProfileUrl = "/api/user/";
 
     SharedPreferences preferences;
 
@@ -167,8 +166,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private void setDataField(){
         JSONObject userJson = getProfile();
         try {
-            tvBirthdate.setText(userJson.getString("birth_date").substring(0,10));
-            tvPregnancyStart.setText(userJson.getString("pregnancy_start_at").substring(0,10));
+            tvBirthdate.setText(userJson.getString("birth_date"));
+            tvPregnancyStart.setText(userJson.getString("pregnancy_start_at"));
             etFirstName.setText( userJson.getString("first_name"));
             etLastName.setText(userJson.getString("last_name"));
             etWeight.setText(String.valueOf(userJson.getInt("weight")));
@@ -285,8 +284,7 @@ public class EditProfileActivity extends AppCompatActivity {
     };
 
     private void ifFormValid(){
-        String realPath = common.getRealPathFromURI(filePath, context);
-        uploadFotoProfile(realPath);
+        saveProfile();
     }
 
     private String getUserRaw(){
@@ -309,7 +307,6 @@ public class EditProfileActivity extends AppCompatActivity {
         JSONObject user;
         try {
             user = new JSONObject(getUserRaw());
-            updateProfileUrl += user.getString("id")+"?api_token="+user.getString("api_token");
             return user;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -318,6 +315,17 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void saveProfile(){
+        JSONObject user = getProfile();
+        String apiToken = "";
+        String id = "";
+        try {
+            apiToken = user.getString("api_token");
+            id = user.getString("id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String url = "/api/user/"+id+"?api_token="+apiToken;
+
         JSONObject userJson = new JSONObject();
         try {
             userJson.put("first_name", etFirstName.getText().toString());
@@ -327,8 +335,8 @@ public class EditProfileActivity extends AppCompatActivity {
             userJson.put("birth_date", tvBirthdate.getText().toString());
             userJson.put("pregnancy_start", tvPregnancyStart.getText().toString());
             userJson.put("weight", etWeight.getText().toString());
-
-            MyHTTPRequest myHTTPRequest = new MyHTTPRequest(this, view, updateProfileUrl,
+            Log.d("cek", "Hello");
+            MyHTTPRequest myHTTPRequest = new MyHTTPRequest(this, view, url,
                     "POST", userJson, httpResponse, progressBar);
             myHTTPRequest.execute();
         } catch (JSONException e) {
@@ -375,6 +383,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 mImageBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(),
                         data.getData());
                 fotoProfile.setImageBitmap(mImageBitmap);
+                try{
+                    String realPath = common.getRealPathFromURI(filePath, context);
+                    uploadFotoProfile(realPath);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Log.e("FilePathError", e.getLocalizedMessage()+", "+e.getMessage()+", caused by:"+e.getCause());
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -416,7 +431,21 @@ public class EditProfileActivity extends AppCompatActivity {
         UploadToServer uploadToServer = new UploadToServer(progressBar, entity, new UploadToServer.ResultUpload() {
             @Override
             public void resultUploadExecute(String result) {
-                Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+                    if (!jsonObject.getBoolean("error")) {
+                        Log.d("result", result);
+                        try {
+                            setUserRaw(jsonObject.getString("user"));
+                        } catch (Exception e){
+                            e.printStackTrace();
+                            Log.e("SetUserRaw", e.getLocalizedMessage()+", caused:"+e.getCause());
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }, url);
         Log.d("url", url);

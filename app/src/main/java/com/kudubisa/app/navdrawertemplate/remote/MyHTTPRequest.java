@@ -89,7 +89,7 @@ public class MyHTTPRequest extends AsyncTask<String, Void, String> {
             Log.e(MY_HTTP_REQUEST,e.getMessage());
             error = e.getMessage();
         }
-        Log.d(MY_HTTP_REQUEST, "error: "+error);
+
         if (rc >= HttpURLConnection.HTTP_OK && rc <= HttpURLConnection.HTTP_ACCEPTED) {
             Log.d("fuck", "you"+rc);
             return body;
