@@ -1,5 +1,6 @@
 package com.kudubisa.app.navdrawertemplate;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -9,13 +10,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.kudubisa.app.navdrawertemplate.remote.Common;
+import com.kudubisa.app.navdrawertemplate.remote.MyHTTPRequest;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Password;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -31,7 +38,10 @@ public class ResetPasswordActivity extends AppCompatActivity {
     private EditText etEmail;
 
     private Button btnSave;
-
+    private ProgressBar progressBar;
+    private View mView;
+    private Common common;
+    private Context context;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +51,10 @@ public class ResetPasswordActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         etEmail = (EditText) findViewById(R.id.etEmail);
         btnSave = (Button) findViewById(R.id.btnSave);
+        mView = btnSave;
 
         validator = new Validator(this);
         validator.setValidationListener(validationListener);
@@ -53,7 +65,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 validator.validate();
             }
         });
-
+        common = new Common();
+        context = this;
     }
 
     @Override
@@ -86,6 +99,34 @@ public class ResetPasswordActivity extends AppCompatActivity {
     };
 
     private void ifFormValid(){
-        Toast.makeText(this, "Data is valid", Toast.LENGTH_SHORT).show();
+        String api_token;
+        String id;
+        String url = "/api/user/";
+        try {
+            JSONObject user = new JSONObject(common.getUserRaw(context));
+
+            api_token = user.getString("api_token");
+            id = user.getString("id");
+            url = url + id + "/reset-password?api_token=" + api_token;
+            String full_url = common.getFullUrl(url);
+            JSONObject jsonObject = new JSONObject();
+            MyHTTPRequest myHTTPRequest = new MyHTTPRequest(context, mView, full_url,
+                    "POST", jsonObject, new MyHTTPRequest.HTTPResponse() {
+                @Override
+                public void response(String body, View view) {
+                    try {
+                        JSONObject result = new JSONObject(body);
+                        Toast.makeText(context, result.getString("message"), Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, progressBar);
+
+            myHTTPRequest.execute();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 }

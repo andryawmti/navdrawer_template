@@ -80,7 +80,6 @@ public class UploadToServer extends AsyncTask<Void, Integer, String> {
                 responseString = "Error occurred! Http Status Code: "
                         + statusCode;
             }
-
         } catch (ClientProtocolException e) {
             responseString = e.toString();
         } catch (IOException e) {
