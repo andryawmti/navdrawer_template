@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -52,6 +53,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
         etEmail = (EditText) findViewById(R.id.etEmail);
         btnSave = (Button) findViewById(R.id.btnSave);
         mView = btnSave;
@@ -99,35 +101,57 @@ public class ResetPasswordActivity extends AppCompatActivity {
     };
 
     private void ifFormValid(){
-        String api_token;
-        String id;
-        String url = "/api/user/";
+        resetPassword();
+    }
+
+    /**
+     * Get Profile
+     * @return JSONObject
+     */
+    private JSONObject getProfile(){
+        JSONObject user;
         try {
-            JSONObject user = new JSONObject(common.getUserRaw(context));
+            user = new JSONObject(common.getUserRaw(this));
+            return user;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-            api_token = user.getString("api_token");
+
+    private void resetPassword(){
+        JSONObject user = getProfile();
+        String apiToken = "";
+        String id = "";
+        try {
+            apiToken = user.getString("api_token");
             id = user.getString("id");
-            url = url + id + "/reset-password?api_token=" + api_token;
-            String full_url = common.getFullUrl(url);
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("email", etEmail.getText().toString());
-            MyHTTPRequest myHTTPRequest = new MyHTTPRequest(context, mView, full_url,
-                    "POST", jsonObject, new MyHTTPRequest.HTTPResponse() {
-                @Override
-                public void response(String body, View view) {
-                    try {
-                        JSONObject result = new JSONObject(body);
-                        Toast.makeText(context, result.getString("message"), Toast.LENGTH_SHORT).show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, progressBar);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String url = "/api/user/reset-password?api_token="+apiToken;
 
+        JSONObject userJson = new JSONObject();
+        try {
+            userJson.put("email", etEmail.getText().toString());
+            MyHTTPRequest myHTTPRequest = new MyHTTPRequest(this, mView, url,
+                    "POST", userJson, httpResponse, progressBar);
             myHTTPRequest.execute();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
+
+    MyHTTPRequest.HTTPResponse httpResponse = new MyHTTPRequest.HTTPResponse() {
+        @Override
+        public void response(String body, View view) {
+            try {
+                JSONObject jsonObject = new JSONObject(body);
+                Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 }

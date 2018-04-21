@@ -324,7 +324,7 @@ public class EditProfileActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String url = "/api/user/"+id+"?api_token="+apiToken;
+        String url = "/api/user/"+id+"/reset-password?api_token="+apiToken;
 
         JSONObject userJson = new JSONObject();
         try {
@@ -335,6 +335,7 @@ public class EditProfileActivity extends AppCompatActivity {
             userJson.put("birth_date", tvBirthdate.getText().toString());
             userJson.put("pregnancy_start", tvPregnancyStart.getText().toString());
             userJson.put("weight", etWeight.getText().toString());
+            userJson.put("email", "hanbyul.park@gmail.com");
             Log.d("cek", "Hello");
             MyHTTPRequest myHTTPRequest = new MyHTTPRequest(this, view, url,
                     "POST", userJson, httpResponse, progressBar);

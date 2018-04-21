@@ -58,8 +58,8 @@ public class MyHTTPRequest extends AsyncTask<String, Void, String> {
         try{
             URL url = new URL(BASE_URL+mUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setReadTimeout(15000);
-            con.setConnectTimeout(15000);
+            con.setReadTimeout(30000);
+            con.setConnectTimeout(30000);
             con.setRequestMethod(method);
             con.setDoOutput(true);
             con.setDoInput(true);
