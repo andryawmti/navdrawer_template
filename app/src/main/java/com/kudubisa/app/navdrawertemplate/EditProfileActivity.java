@@ -335,7 +335,6 @@ public class EditProfileActivity extends AppCompatActivity {
             userJson.put("birth_date", tvBirthdate.getText().toString());
             userJson.put("pregnancy_start", tvPregnancyStart.getText().toString());
             userJson.put("weight", etWeight.getText().toString());
-            userJson.put("email", "hanbyul.park@gmail.com");
             Log.d("cek", "Hello");
             MyHTTPRequest myHTTPRequest = new MyHTTPRequest(this, view, url,
                     "POST", userJson, httpResponse, progressBar);
