@@ -110,6 +110,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
             url = url + id + "/reset-password?api_token=" + api_token;
             String full_url = common.getFullUrl(url);
             JSONObject jsonObject = new JSONObject();
+            jsonObject.put("email", etEmail.getText().toString());
             MyHTTPRequest myHTTPRequest = new MyHTTPRequest(context, mView, full_url,
                     "POST", jsonObject, new MyHTTPRequest.HTTPResponse() {
                 @Override
