@@ -122,15 +122,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
     private void resetPassword(){
         JSONObject user = getProfile();
-        String apiToken = "";
-        String id = "";
-        try {
-            apiToken = user.getString("api_token");
-            id = user.getString("id");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String url = "/api/user/reset-password?api_token="+apiToken;
+        String url = "/user/reset-password";
 
         JSONObject userJson = new JSONObject();
         try {
