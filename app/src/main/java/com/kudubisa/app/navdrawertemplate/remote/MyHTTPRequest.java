@@ -21,7 +21,7 @@ import java.net.URL;
  */
 
 public class MyHTTPRequest extends AsyncTask<String, Void, String> {
-    private static final String BASE_URL = "http://dev2.dadadasnoopdog.com";
+    private static final String BASE_URL = "https://wahid.kudubisa.com";
     private static final String MY_HTTP_REQUEST = "MyHTTPRequest";
     Context mContext;
     JSONObject mJSONObject;

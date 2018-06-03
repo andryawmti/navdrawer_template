@@ -38,29 +38,40 @@ public class LoginActivity extends AppCompatActivity {
     UserLogin userLogin;
     ProgressBar progressBar;
     View mView;
+    private Context context;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        context = getApplicationContext();
         btnLogin = (Button) findViewById(R.id.btn_login);
         btnSignup = (Button) findViewById(R.id.btn_signup);
         loginEmail = (EditText) findViewById(R.id.login_email);
         loginPassword = (EditText) findViewById(R.id.login_password);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
-        btnLogin.setOnClickListener(btnLoginOnClickListener);
+        btnLogin.setOnClickListener(onClickListener);
+        btnSignup.setOnClickListener(onClickListener);
         mView = btnLogin;
         loadPreferences();
         login(mView);
     }
 
-    Button.OnClickListener btnLoginOnClickListener = new View.OnClickListener() {
+    View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            loginCredentials.setEmail(loginEmail.getText().toString());
-            loginCredentials.setPassword(loginPassword.getText().toString());
-            loginCredentials.setRemember(false);
-            login(view); //it will do login check and return UserLogin model
+            switch (view.getId()) {
+                case R.id.btn_login:
+                    loginCredentials.setEmail(loginEmail.getText().toString());
+                    loginCredentials.setPassword(loginPassword.getText().toString());
+                    loginCredentials.setRemember(false);
+                    login(view); //it will do login check and return UserLogin model
+                    break;
+                case R.id.btn_signup:
+                    Intent intent = new Intent(context, SignUpActivity.class);
+                    context.startActivity(intent);
+                    break;
+            }
         }
     };
 
