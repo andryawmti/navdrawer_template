@@ -61,16 +61,18 @@ public class MyHTTPRequest extends AsyncTask<String, Void, String> {
             con.setReadTimeout(30000);
             con.setConnectTimeout(30000);
             con.setRequestMethod(method);
-            con.setDoOutput(true);
             con.setDoInput(true);
-            OutputStream os = con.getOutputStream();
-            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-            BufferedWriter bw = new BufferedWriter(osw);
-            mjsonParser = new MJSONParser(mJSONObject);
-            bw.write(mjsonParser.getJSONObject());
-            bw.flush();
-            bw.close();
-            os.close();
+            if (method.equals("POST")) {
+                con.setDoOutput(true);
+                OutputStream os = con.getOutputStream();
+                OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+                BufferedWriter bw = new BufferedWriter(osw);
+                mjsonParser = new MJSONParser(mJSONObject);
+                bw.write(mjsonParser.getJSONObject());
+                bw.flush();
+                bw.close();
+                os.close();
+            }
             rc = con.getResponseCode();
             if (rc >= HttpURLConnection.HTTP_OK && rc <= HttpURLConnection.HTTP_ACCEPTED) {
                 Log.d(MY_HTTP_REQUEST, "HTTP_OK:"+rc);

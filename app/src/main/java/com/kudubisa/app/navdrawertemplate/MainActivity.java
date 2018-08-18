@@ -7,13 +7,11 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,11 +21,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.kudubisa.app.navdrawertemplate.fragment.HomeFragment;
+import com.kudubisa.app.navdrawertemplate.fragment.HelpFragment;
+import com.kudubisa.app.navdrawertemplate.fragment.MenuListFragment;
 import com.kudubisa.app.navdrawertemplate.fragment.ProfileFragment;
+import com.kudubisa.app.navdrawertemplate.fragment.TipsFragment;
+import com.kudubisa.app.navdrawertemplate.remote.Common;
 import com.kudubisa.app.navdrawertemplate.remote.MyHTTPRequest;
 
 import org.json.JSONException;
@@ -42,10 +48,17 @@ public class MainActivity extends AppCompatActivity {
     private final static String EMAIL = "email";
     private final static String PASSWORD = "password";
     Context context = MainActivity.this;
+
+    Common common;
+
+    ImageView profilPiture;
+    TextView profileName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        common = new Common();
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
@@ -61,23 +74,45 @@ public class MainActivity extends AppCompatActivity {
         }
 
         NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+
+        View headerView = navView.getHeaderView(0);
+        profilPiture = (ImageView) headerView.findViewById(R.id.navheader_profile);
+        profileName = (TextView) headerView.findViewById(R.id.navheader_profile_name);
+        setNavHederProfile();
+
         navView.setNavigationItemSelectedListener(navigationItemSelectedListener);
+        loadFragment(new HomeFragment());
     }
 
     NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment fragment;
+            Fragment fragment = new Fragment();
             item.setChecked(true);
             switch (item.getItemId()){
+                case R.id.home:
+                    fragment = new HomeFragment();
+                    break;
                 case R.id.profile_settings:
                     fragment = new ProfileFragment();
-                    loadFragment(fragment);
                     break;
                 case R.id.logout:
                     logout(mView);
                     break;
+                case R.id.menu_list:
+                    fragment = new MenuListFragment();
+                    break;
+                case R.id.consultation:
+                    fragment = new HomeFragment();
+                    break;
+                case R.id.help:
+                    fragment = new HelpFragment();
+                    break;
+                case R.id.tips:
+                    fragment = new TipsFragment();
+                    break;
             }
+            loadFragment(fragment);
             drawerLayout.closeDrawers();
             return true;
         }
@@ -110,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadFragment(Fragment fragment){
         hideWelcome();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content_frame, fragment);
+        ft.replace(R.id.content_frame, fragment, "MY_FRAGMENT");
         ft.addToBackStack(null);
         ft.commit();
     }
@@ -135,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(body);
                 Log.d("MainActivity", "response_executed");
                 Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-                if (jsonObject.getBoolean("error")==false) {
+                if (!jsonObject.getBoolean("error")) {
                     modifyPreferences();
                     ifLogoutSuccess();
                 }
@@ -159,6 +194,23 @@ public class MainActivity extends AppCompatActivity {
         editor.putString(EMAIL, "");
         editor.putString(PASSWORD, "");
         editor.apply();
+    }
+
+    public void setActionbarTitle(String title){
+        getSupportActionBar().setTitle(title);
+    }
+
+    public void setNavHederProfile() {
+        try {
+            JSONObject jsonObject = new JSONObject(common.getUserRaw(context));
+            String photoPath = common.getFullUrl(jsonObject.getString("photo"));
+            Log.d("photoPath", photoPath);
+            Glide.with(context).load(photoPath).into(profilPiture);
+            String fullName = jsonObject.getString("first_name") + " " + jsonObject.getString("last_name");
+            profileName.setText(fullName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }

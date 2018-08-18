@@ -14,34 +14,43 @@
             <!--android:icon="@drawable/ic_person_add_black_24dp"-->
             <!--android:iconTint="@android:color/white"-->
             <!--android:iconTintMode="src_in"/>-->
-
+        <item
+            android:id="@+id/home"
+            android:title="@string/home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:iconTint="@color/white"
+            android:iconTintMode="src_in"/>
         <item
             android:id="@+id/profile_settings"
             android:title="@string/profile_settings"
             android:icon="@drawable/ic_account_circle_black_24dp"
             android:iconTint="@android:color/white"
-            android:iconTintMode="src_in"/>
+            android:iconTintMode="src_in"
+            android:visible="false"/>
 
         <item
             android:id="@+id/consultation"
             android:title="@string/consultation"
             android:icon="@drawable/ic_local_library_black_24dp"
             android:iconTint="@android:color/white"
-            android:iconTintMode="src_in"/>
+            android:iconTintMode="src_in"
+            android:visible="false"/>
 
         <item
             android:id="@+id/menu_list"
             android:title="@string/menu_list"
             android:icon="@drawable/ic_restaurant_menu_black_24dp"
             android:iconTint="@android:color/white"
-            android:iconTintMode="src_in"/>
+            android:iconTintMode="src_in"
+            android:visible="false"/>
 
         <item
             android:id="@+id/tips"
             android:title="@string/tips"
             android:icon="@drawable/ic_wb_incandescent_black_24dp"
             android:iconTint="@android:color/white"
-            android:iconTintMode="src_in"/>
+            android:iconTintMode="src_in"
+            android:visible="false"/>
 
         <item
             android:id="@+id/help"

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.kudubisa.app.navdrawertemplate.AccountSettingsActivity;
 import com.kudubisa.app.navdrawertemplate.EditProfileActivity;
+import com.kudubisa.app.navdrawertemplate.MainActivity;
 import com.kudubisa.app.navdrawertemplate.R;
 import com.kudubisa.app.navdrawertemplate.remote.Common;
 
@@ -39,8 +40,8 @@ public class ProfileFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ((MainActivity) getActivity()).setActionbarTitle("Profile");
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-
         profilePhoto = (ImageView) view.findViewById(R.id.profile_picture);
         tvProfileName = (TextView) view.findViewById(R.id.profile_name);
         tvFullName = (TextView) view.findViewById(R.id.tv_full_name);
