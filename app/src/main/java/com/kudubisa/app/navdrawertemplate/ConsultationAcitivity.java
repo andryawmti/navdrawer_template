@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -138,6 +139,7 @@ public class ConsultationAcitivity extends AppCompatActivity implements
             intent.putExtra("weight", String.valueOf(weight));
             intent.putExtra("sleepTime", String.valueOf(sleepTime));
             intent.putExtra("pregnancyAge", String.valueOf(pregnancyAge));
+            intent.putExtra("activity", String.valueOf(activityPercentage));
             startActivity(intent);
             this.finish();
         } catch (JSONException e) {
