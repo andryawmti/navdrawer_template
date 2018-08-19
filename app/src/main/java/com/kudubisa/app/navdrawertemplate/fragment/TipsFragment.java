@@ -82,6 +82,7 @@ public class TipsFragment extends Fragment {
                     tips.setAuthorName(jsonTips.optString("author_name"));
                     tips.setTitle(jsonTips.optString("title"));
                     tips.setBody(jsonTips.optString("body"));
+                    tips.setPicture(jsonTips.optString("picture"));
                     tips.setCreatedAt(jsonTips.optString("created_at"));
                     tips.setUpdatedAt(jsonTips.optString("updated_at"));
                     tipsList.add(tips);

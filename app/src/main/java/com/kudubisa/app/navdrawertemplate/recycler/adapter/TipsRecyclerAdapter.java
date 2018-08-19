@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.kudubisa.app.navdrawertemplate.R;
@@ -47,6 +48,13 @@ public class TipsRecyclerAdapter extends RecyclerView.Adapter<TipsRecyclerAdapte
             String picUrl = common.getFullUrl(tips.getPicture());
             Glide.with(context).load(picUrl).into(holder.picture);
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
