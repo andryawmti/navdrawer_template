@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.kudubisa.app.navdrawertemplate.MainActivity;
 import com.kudubisa.app.navdrawertemplate.R;
 import com.kudubisa.app.navdrawertemplate.model.Consultation;
 import com.kudubisa.app.navdrawertemplate.recycler.adapter.ConsultationRecyclerAdapter;
@@ -43,6 +44,7 @@ public class ConsultationFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ((MainActivity) getActivity()).setActionbarTitle("Riwayat Konsultasi");
         common = new Common();
         context = getContext();
         view = inflater.inflate(R.layout.fragment_consultation, container, false);

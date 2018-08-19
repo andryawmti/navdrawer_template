@@ -41,7 +41,7 @@ public class ConsultationRecyclerAdapter extends RecyclerView.Adapter<Consultati
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Consultation consultation = consultationList.get(position);
+        final Consultation consultation = consultationList.get(position);
         String listTitle = "Usia kandungan : "+consultation.getPregnancyAge()+" minggu";
         String listDesc = "Kebutuhan kalori hairan : "+consultation.getCalorie()+" kalori";
         holder.listTitle.setText(listTitle);
@@ -52,6 +52,7 @@ public class ConsultationRecyclerAdapter extends RecyclerView.Adapter<Consultati
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ConsultationDetailActivity.class);
+                intent.putExtra("calorie", consultation.getCalorie());
                 context.startActivity(intent);
             }
         });
