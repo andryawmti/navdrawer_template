@@ -58,7 +58,7 @@ public class TipsFragment extends Fragment {
             e.printStackTrace();
         }
 
-        String url = "api/tips?api_token="+apiToken;
+        String url = "/api/tips?api_token="+apiToken;
         JSONObject reqParams = new JSONObject();
         MyHTTPRequest myHTTPRequest = new MyHTTPRequest(context, view, url, "GET",
                 reqParams, response, progressBar);
@@ -78,7 +78,8 @@ public class TipsFragment extends Fragment {
                     Tips tips = new Tips();
                     JSONObject jsonTips = tipsArray.optJSONObject(i);
                     tips.setId(jsonTips.optString("id"));
-                    tips.setAuthor(jsonTips.optString("author"));
+                    tips.setAuthorId(jsonTips.optString("admin_id"));
+                    tips.setAuthorName(jsonTips.optString("author_name"));
                     tips.setTitle(jsonTips.optString("title"));
                     tips.setBody(jsonTips.optString("body"));
                     tips.setCreatedAt(jsonTips.optString("created_at"));

@@ -50,7 +50,7 @@ public class ConsultationResultActivity extends AppCompatActivity {
         pregnancyAge = intent.getStringExtra("pregnancyAge");
         activity = intent.getStringExtra("activity");
         tvCalorieNeed.setText(calorie+" Kalori");
-        initRecyclerView();
+        saveResult();
     }
 
     private void saveResult(){

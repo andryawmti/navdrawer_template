@@ -6,7 +6,8 @@ package com.kudubisa.app.navdrawertemplate.model;
 
 public class Tips {
     String id;
-    String author;
+    String authorId;
+    String authorName;
     String picture;
     String title;
     String body;
@@ -21,12 +22,20 @@ public class Tips {
         this.id = id;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
     }
 
     public String getPicture() {

@@ -67,6 +67,7 @@ public class ConsultationAcitivity extends AppCompatActivity implements
         activitySpinner.setOnItemSelectedListener(this);
 
         btnSubmit.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
     }
 
     @Override
@@ -108,6 +109,10 @@ public class ConsultationAcitivity extends AppCompatActivity implements
                 } else {
                     validationWarning.setVisibility(View.VISIBLE);
                 }
+                break;
+            case R.id.btnCancel:
+                this.finish();
+                getSupportFragmentManager().popBackStack();
                 break;
         }
     }

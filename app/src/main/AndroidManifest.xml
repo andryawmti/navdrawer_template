@@ -28,6 +28,7 @@
         <activity android:name=".MainActivity"/>
         <activity android:name=".ConsultationAcitivity"/>
         <activity android:name=".ConsultationResultActivity"/>
+        <activity android:name=".ConsultationDetailActivity"/>
     </application>
 
 </manifest>
