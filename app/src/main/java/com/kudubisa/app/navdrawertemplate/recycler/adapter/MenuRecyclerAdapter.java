@@ -31,11 +31,9 @@ import java.util.List;
 public class MenuRecyclerAdapter extends RecyclerView.Adapter<MenuRecyclerAdapter.ViewHolder> {
     private List<Menu> menuList;
     private Context context;
-    private Common common;
 
     public MenuRecyclerAdapter(List<Menu> menuList) {
         this.menuList = menuList;
-        common = new Common();
     }
 
     @Override
@@ -45,26 +43,43 @@ public class MenuRecyclerAdapter extends RecyclerView.Adapter<MenuRecyclerAdapte
         return new ViewHolder(view);
     }
 
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView avatar;
+        TextView title, desc, calorie;
+        private ViewHolder(View itemView) {
+            super(itemView);
+            avatar = itemView.findViewById(R.id.list_image);
+            title = itemView.findViewById(R.id.list_title);
+            desc = itemView.findViewById(R.id.list_desc);
+            calorie = itemView.findViewById(R.id.list_calorie);
+        }
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Menu menu = menuList.get(position);
-        if (menu.getPicture() != "null") {
-            String pictureUrl = common.getFullUrl(menu.getPicture());
+        if (!menu.getPhoto().equals("null")) {
+            String pictureUrl = Common.getFullUrl(menu.getPhoto());
             Glide.with(context).load(pictureUrl).into(holder.avatar);
         } else {
             holder.avatar.setImageDrawable(context.getDrawable(R.drawable.vegan_tofu_tacos));
         }
-        holder.title.setText(menu.getTitle());
+        holder.title.setText(menu.getName());
         holder.desc.setText(menu.getDescription());
+        holder.calorie.setText(menu.getCalorie() + " KKal");
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, MenuDetailActivity.class);
-                intent.putExtra("title", menu.getTitle());
-                intent.putExtra("desc", menu.getDescription());
-                intent.putExtra("picture", menu.getPicture());
-                intent.putExtra("cooking", menu.getCookingInstruction());
+                intent.putExtra("menu_id", menu.getId());
+                intent.putExtra("added_by", menu.getAddedBy());
+                intent.putExtra("name", menu.getName());
+                intent.putExtra("photo", menu.getPhoto());
+                intent.putExtra("description", menu.getDescription());
                 intent.putExtra("calorie", menu.getCalorie());
+                intent.putExtra("carbohydrate", menu.getCarbohydrate());
+                intent.putExtra("protein", menu.getProtein());
+                intent.putExtra("fat", menu.getFat());
                 context.startActivity(intent);
             }
         });
@@ -73,16 +88,5 @@ public class MenuRecyclerAdapter extends RecyclerView.Adapter<MenuRecyclerAdapte
     @Override
     public int getItemCount() {
         return menuList.size();
-    }
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView avatar;
-        TextView title, desc;
-        private ViewHolder(View itemView) {
-            super(itemView);
-            avatar = (ImageView) itemView.findViewById(R.id.list_image);
-            title = (TextView) itemView.findViewById(R.id.list_title);
-            desc = (TextView) itemView.findViewById(R.id.list_desc);
-        }
     }
 }

@@ -26,11 +26,19 @@
     <string name="fragment_menu_list_title">Daftar Menu Makanan</string>
     <string name="detail_menu_title">Detail Menu</string>
     <string name="menu_content_description">Picture of Menu</string>
-    <string name="btn_consultation">Mulai Konsultasi</string>
+    <string name="btn_consultation">Start Consultation</string>
     <string name="tips_title">Tips Untuk Ibu</string>
     <string name="tips_body">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci alias aliquid autem cupiditate dolore facere facilis fugit magnam maiores, modi natus necessitatibus omnis perferendis praesentium repellat sequi unde voluptates voluptatum.</string>
     <string name="help_title">Help</string>
     <string name="help_content">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium consectetur ea earum fugit ipsa magni repellat tempora vel velit, veniam. Aliquam autem cum dolorem, excepturi explicabo maxime officia qui tempora!</string>
     <string name="yourCalorieNeedToday">Kebutuhan Kalori Anda Hari Ini</string>
     <string name="calorieNeed">2500 Kalori</string>
+    <string name="_650_kkal">650 KKal</string>
+    <string name="calorie">Calorie:</string>
+    <string name="nutrition">Nutrition</string>
+    <string name="carbohydrate">Carbohydrate:</string>
+    <string name="protein">Protein:</string>
+    <string name="fat">Fat:</string>
+    <string name="description">Description</string>
+    <string name="ingredient">Ingredient</string>
 </resources>

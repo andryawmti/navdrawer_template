@@ -29,6 +29,7 @@
         <activity android:name=".ConsultationAcitivity"/>
         <activity android:name=".ConsultationResultActivity"/>
         <activity android:name=".ConsultationDetailActivity"/>
+        <activity android:name=".TipsDetailActivity"></activity>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.kudubisa.app.navdrawertemplate.remote;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -21,8 +22,9 @@ import java.net.URL;
  */
 
 public class MyHTTPRequest extends AsyncTask<String, Void, String> {
-    private static final String BASE_URL = "https://wahid.kudubisa.com";
     private static final String MY_HTTP_REQUEST = "MyHTTPRequest";
+
+    @SuppressLint("StaticFieldLeak")
     Context mContext;
     JSONObject mJSONObject;
     MJSONParser mjsonParser;
@@ -31,6 +33,7 @@ public class MyHTTPRequest extends AsyncTask<String, Void, String> {
     HTTPResponse mHttpResponse;
     View mView;
     ProgressBar mProgressBar;
+
     public MyHTTPRequest(Context context, View view, String url, String method, JSONObject jsonObject,
                          HTTPResponse httpResponse, ProgressBar progressBar) {
         this.mContext = context;
@@ -52,60 +55,80 @@ public class MyHTTPRequest extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... strings) {
-        String error = "HTTP Response Code is not 200";
-        String body="";
-        int rc=0;
+        String error = "HTTP Response Code is not 200 or 202";
+        String body;
+
+        int responseCode;
+
         try{
-            URL url = new URL(BASE_URL+mUrl);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setReadTimeout(30000);
-            con.setConnectTimeout(30000);
-            con.setRequestMethod(method);
-            con.setDoInput(true);
+
+            URL url = new URL(Common.getApiUrl(this.mUrl));
+
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+            httpURLConnection.setReadTimeout(30000);
+            httpURLConnection.setConnectTimeout(30000);
+            httpURLConnection.setRequestMethod(method);
+            httpURLConnection.setDoInput(true);
+
             if (method.equals("POST")) {
-                con.setDoOutput(true);
-                OutputStream os = con.getOutputStream();
-                OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-                BufferedWriter bw = new BufferedWriter(osw);
+                httpURLConnection.setDoOutput(true);
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-8");
+
+                BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
+
                 mjsonParser = new MJSONParser(mJSONObject);
-                bw.write(mjsonParser.getJSONObject());
-                bw.flush();
-                bw.close();
-                os.close();
+
+                bufferedWriter.write(mjsonParser.getJSONObject());
+                bufferedWriter.flush();
+                bufferedWriter.close();
+
+                outputStream.close();
             }
-            rc = con.getResponseCode();
-            if (rc >= HttpURLConnection.HTTP_OK && rc <= HttpURLConnection.HTTP_ACCEPTED) {
-                Log.d(MY_HTTP_REQUEST, "HTTP_OK:"+rc);
-                InputStreamReader isr = new InputStreamReader(con.getInputStream());
-                BufferedReader br = new BufferedReader(isr);
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = br.readLine())!=null) {
-                    sb.append(line);
+
+            responseCode = httpURLConnection.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_ACCEPTED) {
+                Log.d(MY_HTTP_REQUEST, "response_code:" + responseCode);
+
+                InputStreamReader inputStreamReader = new InputStreamReader(httpURLConnection.getInputStream());
+
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder stringBuilder= new StringBuilder();
+
+                String stringLine;
+
+                while (( stringLine = bufferedReader.readLine() ) != null) {
+                    stringBuilder.append(stringLine);
                 }
-                Log.d(MY_HTTP_REQUEST, sb.toString());
-                body = sb.toString();
+
+                Log.d(MY_HTTP_REQUEST, "HTTP Request result : " + stringBuilder.toString());
+
+                body = stringBuilder.toString();
+
+                return body;
             }
-        }catch(Exception e){
+
+            return error;
+
+        } catch (Exception e) {
             e.printStackTrace();
             Log.e(MY_HTTP_REQUEST,e.getMessage());
-            error = e.getMessage();
-        }
 
-        if (rc >= HttpURLConnection.HTTP_OK && rc <= HttpURLConnection.HTTP_ACCEPTED) {
-            Log.d("fuck", "you"+rc);
-            return body;
-        }else{
-            Log.d("fuck", "her"+rc);
-            return error;
+            return e.getMessage();
         }
 
     }
 
     @Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-        mHttpResponse.response(s, mView);
+    protected void onPostExecute(String body) {
+        super.onPostExecute(body);
+
+        mHttpResponse.response(body, mView);
+
         if (mProgressBar != null) {
             mProgressBar.setVisibility(View.GONE);
         }

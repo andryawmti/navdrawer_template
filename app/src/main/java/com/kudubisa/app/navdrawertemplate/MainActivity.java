@@ -39,52 +39,67 @@ import com.kudubisa.app.navdrawertemplate.remote.MyHTTPRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
+
     ProgressBar progressBar;
-    View mView;
+
     SharedPreferences preferences;
     private final static String LOGIN_PREFS = "login_prefs";
     private final static String EMAIL = "email";
     private final static String PASSWORD = "password";
+
     Context context = MainActivity.this;
 
-    Common common;
-
-    ImageView profilPiture;
+    ImageView profilePicture;
     TextView profileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        common = new Common();
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        drawerLayout = findViewById(R.id.drawer);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
+
         ActionBar supportActionBar = getSupportActionBar();
+
         if (supportActionBar != null) {
-            VectorDrawableCompat indicator = VectorDrawableCompat.create(getResources(),
-                    R.drawable.ic_menu_black_24dp, getTheme());
-            indicator.setTint(ResourcesCompat.getColor(getResources(), R.color.white, getTheme()));
-            supportActionBar.setHomeAsUpIndicator(indicator);
-            supportActionBar.setDisplayHomeAsUpEnabled(true);
+            VectorDrawableCompat indicator = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu_black_24dp, getTheme());
+
+            if (indicator != null) {
+
+                indicator.setTint(ResourcesCompat.getColor(getResources(), R.color.white, getTheme()));
+
+                supportActionBar.setHomeAsUpIndicator(indicator);
+                supportActionBar.setDisplayHomeAsUpEnabled(true);
+            }
         }
 
-        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navView = findViewById(R.id.nav_view);
 
         View headerView = navView.getHeaderView(0);
-        profilPiture = (ImageView) headerView.findViewById(R.id.navheader_profile);
-        profileName = (TextView) headerView.findViewById(R.id.navheader_profile_name);
-        setNavHederProfile();
+
+        profilePicture = headerView.findViewById(R.id.navheader_profile);
+        profileName = headerView.findViewById(R.id.navheader_profile_name);
+
+        setNavHeaderProfile();
 
         navView.setNavigationItemSelectedListener(navigationItemSelectedListener);
+
         loadFragment(new HomeFragment());
     }
 
-    NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new NavigationView.OnNavigationItemSelectedListener() {
+    NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+            new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment = new Fragment();
@@ -97,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                     fragment = new ProfileFragment();
                     break;
                 case R.id.logout:
-                    logout(mView);
+                    logout();
                     break;
                 case R.id.menu_list:
                     fragment = new MenuListFragment();
@@ -112,8 +127,11 @@ public class MainActivity extends AppCompatActivity {
                     fragment = new TipsFragment();
                     break;
             }
+
             loadFragment(fragment);
+
             drawerLayout.closeDrawers();
+
             return true;
         }
     };
@@ -121,22 +139,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+
         int x = menu.size();
+
         Log.d("size:", String.valueOf(x));
-        for (int i=0; i < x; i++) {
+
+        for (int i = 0; i < x; i++) {
             Drawable icon = menu.getItem(i).getIcon();
             icon.mutate();
             icon.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
         }
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
         if (id == R.id.settings) {
             return true;
-        }else if (id == android.R.id.home) {
+        } else if (id == android.R.id.home) {
             drawerLayout.openDrawer(GravityCompat.START);
         }
         return super.onOptionsItemSelected(item);
@@ -144,41 +167,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadFragment(Fragment fragment){
         hideWelcome();
+
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
         ft.replace(R.id.content_frame, fragment, "MY_FRAGMENT");
+
         ft.addToBackStack(null);
+
         ft.commit();
     }
 
     private void hideWelcome(){
-        RelativeLayout relContenFrame = (RelativeLayout) findViewById(R.id.rel_content_frame);
+        RelativeLayout relContenFrame = findViewById(R.id.rel_content_frame);
         relContenFrame.setVisibility(View.GONE);
     }
 
-    private void logout(View mView){
-        String logoutURL = "/user/logout";
-        JSONObject logoutObject = new JSONObject();
-        MyHTTPRequest myHTTPRequest = new MyHTTPRequest(getApplicationContext(), mView,
-                logoutURL, "POST", logoutObject, logoutResponse, progressBar);
-        myHTTPRequest.execute();
+    private void logout(){
+        modifyPreferences();
+        ifLogoutSuccess();
     }
-
-    MyHTTPRequest.HTTPResponse logoutResponse = new MyHTTPRequest.HTTPResponse() {
-        @Override
-        public void response(String body, View view) {
-            try {
-                JSONObject jsonObject = new JSONObject(body);
-                Log.d("MainActivity", "response_executed");
-                Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-                if (!jsonObject.getBoolean("error")) {
-                    modifyPreferences();
-                    ifLogoutSuccess();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    };
 
     private void ifLogoutSuccess(){
         Context context = MainActivity.this;
@@ -189,23 +196,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void modifyPreferences(){
-        preferences = getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(EMAIL, "");
-        editor.putString(PASSWORD, "");
-        editor.apply();
+        Common.setEmail("", this);
+        Common.setPassword("", this);
     }
 
     public void setActionbarTitle(String title){
-        getSupportActionBar().setTitle(title);
+        /*getSupportActionBar().setTitle(title);*/
+        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
     }
 
-    public void setNavHederProfile() {
+    public void setNavHeaderProfile() {
         try {
-            JSONObject jsonObject = new JSONObject(common.getUserRaw(context));
-            String photoPath = common.getFullUrl(jsonObject.getString("photo"));
-            Log.d("photoPath", photoPath);
-            Glide.with(context).load(photoPath).into(profilPiture);
+            JSONObject jsonObject = new JSONObject(Common.getUserRaw(context));
+            String photoPath = Common.getFullUrl(jsonObject.getString("photo"));
+            Glide.with(context).load(photoPath).into(profilePicture);
             String fullName = jsonObject.getString("first_name") + " " + jsonObject.getString("last_name");
             profileName.setText(fullName);
         } catch (JSONException e) {

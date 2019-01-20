@@ -31,7 +31,6 @@ import java.util.List;
 
 public class TipsFragment extends Fragment {
     private List<Tips> tipsList;
-    private Common common;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private Context context;
@@ -40,25 +39,15 @@ public class TipsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ((MainActivity) getActivity()).setActionbarTitle("Tips Untuk Ibu");
         View view = inflater.inflate(R.layout.fragment_tips, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.tips_list_recycler_view);
-        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        common = new Common();
+        recyclerView = view.findViewById(R.id.tips_list_recycler_view);
+        progressBar = view.findViewById(R.id.progressBar);
         context = getContext();
         initTipsRecyclerView(view);
         return view;
     }
 
     private void initTipsRecyclerView(View view) {
-        JSONObject user = null;
-        String apiToken = "";
-        try {
-            user = new JSONObject(common.getUserRaw(context));
-            apiToken = user.getString("api_token");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        String url = "/api/tips?api_token="+apiToken;
+        String url = "/article";
         JSONObject reqParams = new JSONObject();
         MyHTTPRequest myHTTPRequest = new MyHTTPRequest(context, view, url, "GET",
                 reqParams, response, progressBar);
@@ -71,20 +60,19 @@ public class TipsFragment extends Fragment {
         @Override
         public void response(String body, View view) {
             try {
-                JSONObject jsonBody = new JSONObject(body);
-                JSONArray tipsArray = jsonBody.optJSONArray("tips_list");
+                JSONArray tipsArray = new JSONArray(body);
                 tipsList = new ArrayList<>();
                 for (int i = 0; i < tipsArray.length(); i++) {
                     Tips tips = new Tips();
                     JSONObject jsonTips = tipsArray.optJSONObject(i);
-                    tips.setId(jsonTips.optString("id"));
-                    tips.setAuthorId(jsonTips.optString("admin_id"));
-                    tips.setAuthorName(jsonTips.optString("author_name"));
-                    tips.setTitle(jsonTips.optString("title"));
-                    tips.setBody(jsonTips.optString("body"));
-                    tips.setPicture(jsonTips.optString("picture"));
-                    tips.setCreatedAt(jsonTips.optString("created_at"));
-                    tips.setUpdatedAt(jsonTips.optString("updated_at"));
+                    tips.setId(jsonTips.getString("id"));
+                    tips.setAuthorId(jsonTips.getString("admin_id"));
+                    tips.setAuthorName(jsonTips.getString("admin_name"));
+                    tips.setTitle(jsonTips.getString("title"));
+                    tips.setBody(jsonTips.getString("content"));
+                    tips.setPicture(jsonTips.getString("photo"));
+                    tips.setCreatedAt(jsonTips.getString("created_at"));
+                    tips.setUpdatedAt(jsonTips.getString("updated_at"));
                     tipsList.add(tips);
                 }
                 TipsRecyclerAdapter tipsRecyclerAdapter = new TipsRecyclerAdapter(tipsList, context);

@@ -7,54 +7,41 @@ import java.util.List;
  */
 
 public class Menu {
-    private int id;
-    private String title;
-    private String calorie;
-    private String ingredients;
-    private String cookingInstruction;
-    private String description;
-    private String picture;
-    private String createdAt;
-    private String updatedat;
 
-    public int getId() {
+    private String id;
+    private String addedBy;
+    private String name;
+    private String description;
+    private String calorie;
+    private String carbohydrate;
+    private String protein;
+    private String fat;
+    private String photo;
+    private String createdAt;
+    private String updatedAt;
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getAddedBy() {
+        return addedBy;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setAddedBy(String addedBy) {
+        this.addedBy = addedBy;
     }
 
-    public String getCalorie() {
-        return calorie;
+    public String getName() {
+        return name;
     }
 
-    public void setCalorie(String calorie) {
-        this.calorie = calorie;
-    }
-
-    public String getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(String ingredient) {
-        this.ingredients = ingredient;
-    }
-
-    public String getCookingInstruction() {
-        return cookingInstruction;
-    }
-
-    public void setCookingInstruction(String cookingInstruction) {
-        this.cookingInstruction = cookingInstruction;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -65,12 +52,44 @@ public class Menu {
         this.description = description;
     }
 
-    public String getPicture() {
-        return picture;
+    public String getCalorie() {
+        return calorie;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
+    public void setCalorie(String calorie) {
+        this.calorie = calorie;
+    }
+
+    public String getCarbohydrate() {
+        return carbohydrate;
+    }
+
+    public void setCarbohydrate(String carbohydrate) {
+        this.carbohydrate = carbohydrate;
+    }
+
+    public String getProtein() {
+        return protein;
+    }
+
+    public void setProtein(String protein) {
+        this.protein = protein;
+    }
+
+    public String getFat() {
+        return fat;
+    }
+
+    public void setFat(String fat) {
+        this.fat = fat;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public String getCreatedAt() {
@@ -81,11 +100,11 @@ public class Menu {
         this.createdAt = createdAt;
     }
 
-    public String getUpdatedat() {
-        return updatedat;
+    public String getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdatedat(String updatedat) {
-        this.updatedat = updatedat;
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

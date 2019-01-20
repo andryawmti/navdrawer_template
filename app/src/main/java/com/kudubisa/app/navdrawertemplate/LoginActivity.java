@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     private final static String LOGIN_PREFS = "login_prefs";
     private final static String EMAIL = "email";
     private final static String PASSWORD = "password";
-    private  final static  String USER_RAW = "userRaw";
+    private  final static  String USER_RAW = "user_raw";
     Button btnLogin;
     Button btnSignup;
     EditText loginEmail;
@@ -43,7 +43,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         context = getApplicationContext();
+
         btnLogin = (Button) findViewById(R.id.btn_login);
         btnSignup = (Button) findViewById(R.id.btn_signup);
         loginEmail = (EditText) findViewById(R.id.login_email);
@@ -52,8 +54,11 @@ public class LoginActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
         btnLogin.setOnClickListener(onClickListener);
         btnSignup.setOnClickListener(onClickListener);
+
         mView = btnLogin;
+
         loadPreferences();
+
         login(mView);
     }
 
@@ -96,6 +101,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void login(View view){
         JSONObject loginJsonObject = new JSONObject();
+
         try{
             loginJsonObject.put("email", loginCredentials.getEmail());
             loginJsonObject.put("password", loginCredentials.getPassword());
@@ -105,6 +111,7 @@ public class LoginActivity extends AppCompatActivity {
 
         MyHTTPRequest myHTTPRequest = new MyHTTPRequest(getApplicationContext(), view, "/user/login",
                 "POST", loginJsonObject, httpResponse, progressBar);
+
         myHTTPRequest.execute();
     }
 
@@ -113,10 +120,9 @@ public class LoginActivity extends AppCompatActivity {
         public void response(String body, View view) {
             try {
                 JSONObject jsonObject = new JSONObject(body);
-                Toast.makeText(getApplicationContext(),"Welcome "+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-                if (jsonObject.getBoolean("error")==false){
+
+                if (jsonObject.getBoolean("success")){
                     String userJsonRaw = jsonObject.getString("user");
-//                    JSONObject userObejct = new JSONObject(userJsonRaw);
                     modifyPreferences(userJsonRaw);
                     ifLoginSuccess();
                 }

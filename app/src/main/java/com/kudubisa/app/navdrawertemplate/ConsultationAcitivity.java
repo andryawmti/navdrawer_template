@@ -22,6 +22,9 @@ import com.kudubisa.app.navdrawertemplate.remote.Common;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 /**
  * Created by asus on 8/17/18.
  */
@@ -56,7 +59,7 @@ public class ConsultationAcitivity extends AppCompatActivity implements
         btnSubmit = (Button) findViewById(R.id.btnSubmit);
         btnCancel = (Button) findViewById(R.id.btnCancel);
 
-        String[] momsActivity = {"Pilih Aktivitas", "Bed Rest", "Sangat Ringan", "Ringan", "Sedang", "Berat"};
+        String[] momsActivity = {"Select Activity", "Bed Rest", "Sangat Ringan", "Ringan", "Sedang", "Berat"};
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(context,
                 android.R.layout.simple_spinner_dropdown_item,
@@ -65,6 +68,21 @@ public class ConsultationAcitivity extends AppCompatActivity implements
         Spinner activitySpinner = (Spinner) findViewById(R.id.activitySpinner);
         activitySpinner.setAdapter(spinnerAdapter);
         activitySpinner.setOnItemSelectedListener(this);
+
+        /* Set pregnancy age */
+        try {
+            edPregnancyAge.setFocusable(false);
+            edPregnancyAge.setClickable(false);
+            JSONObject userJson = new JSONObject(Common.getUserRaw(context));
+            LocalDateTime currentTime = LocalDateTime.now();
+            LocalDate dateStart = LocalDate.parse(userJson.getString("pregnancy_start_at"));
+            LocalDate dateEnd = currentTime.toLocalDate();
+            int weeks = Common.getWeeksFromTwoDate(dateStart, dateEnd);
+            edPregnancyAge.setText(String.valueOf(weeks));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        /* End of set pregnancy age */
 
         btnSubmit.setOnClickListener(this);
         btnCancel.setOnClickListener(this);

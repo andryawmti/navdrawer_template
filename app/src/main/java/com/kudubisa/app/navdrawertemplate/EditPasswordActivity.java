@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kudubisa.app.navdrawertemplate.remote.Common;
 import com.kudubisa.app.navdrawertemplate.remote.MyHTTPRequest;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -56,23 +57,26 @@ public class EditPasswordActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_password);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Edit Password");
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        TextView tvResetPassword = (TextView) findViewById(R.id.tvResetPassword);
+
+        TextView tvResetPassword = findViewById(R.id.tvResetPassword);
         tvResetPassword.setOnClickListener(onClickListener);
 
-        etCurrentPassword = (EditText) findViewById(R.id.etCurrentPassword);
-        etNewPassword = (EditText) findViewById(R.id.etNewPassword);
-        etConfirmPassword = (EditText) findViewById(R.id.etConfirmPassword);
+        etCurrentPassword = findViewById(R.id.etCurrentPassword);
+        etNewPassword = findViewById(R.id.etNewPassword);
+        etConfirmPassword = findViewById(R.id.etConfirmPassword);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
 
         final Validator validator = new Validator(this);
         validator.setValidationListener(validationListener);
 
-        Button btnSave = (Button) findViewById(R.id.btnSave);
+        Button btnSave = findViewById(R.id.btnSave);
         view = btnSave;
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,42 +128,24 @@ public class EditPasswordActivity extends AppCompatActivity {
     };
 
     private void ifFormValid(){
-//        Toast.makeText(this, "Data is valid", Toast.LENGTH_SHORT).show();
-        JSONObject user = getProfile();
         savePassword();
     }
 
-    private String getUserRaw(){
-        preferences = getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
-        return preferences.getString(USER_RAW,"");
-    }
-
-    private void setUserRaw(String userRaw){
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(PASSWORD, etNewPassword.getText().toString());
-        editor.putString(USER_RAW, userRaw);
-        editor.commit();
-    }
-
-    private JSONObject getProfile(){
-        JSONObject user;
-        try {
-            user = new JSONObject(getUserRaw());
-            updatePasswordUrl += user.getString("id")+"/password?api_token="+user.getString("api_token");
-            return user;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     private void savePassword(){
-        JSONObject userJson = new JSONObject();
+        String url;
+        String userId;
         try {
-            userJson.put("password", etNewPassword.getText().toString());
+            JSONObject userJson = new JSONObject(Common.getUserRaw(getApplicationContext()));
+            userId = userJson.getString("id");
+            url = "/user/" + userId + "/change-password";
 
-            MyHTTPRequest myHTTPRequest = new MyHTTPRequest(this, view, updatePasswordUrl,
-                    "POST", userJson, httpResponse, progressBar);
+            JSONObject param = new JSONObject();
+
+            param.put("current_password", etCurrentPassword.getText().toString());
+            param.put("new_password", etNewPassword.getText().toString());
+
+            MyHTTPRequest myHTTPRequest = new MyHTTPRequest(this, view, url,
+                    "POST", param, httpResponse, progressBar);
             myHTTPRequest.execute();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -171,11 +157,20 @@ public class EditPasswordActivity extends AppCompatActivity {
         public void response(String body, View view) {
             try {
                 JSONObject jsonObject = new JSONObject(body);
-                setUserRaw(jsonObject.getString("user"));
+                if (jsonObject.getBoolean("success")) {
+                    Common.setPassword(etNewPassword.getText().toString(), getApplicationContext());
+                    resetEditText();
+                }
                 Toast.makeText(EditPasswordActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     };
+
+    private void resetEditText() {
+        etNewPassword.setText("");
+        etConfirmPassword.setText("");
+        etCurrentPassword.setText("");
+    }
 }

@@ -19,9 +19,9 @@
         android:id="@+id/list_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/list_image"
-        android:layout_marginLeft="@dimen/md_keyline"
-        tools:text="Usia kandungan : 24 minggu"
+        android:layout_toEndOf="@+id/list_image"
+        android:layout_marginStart="@dimen/md_keyline"
+        tools:text="Pregnancy Age : 24 Week(s)"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textSize="@dimen/article_subheading"/>
 
@@ -30,14 +30,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/list_title"
-        android:layout_toRightOf="@+id/list_image"
-        android:layout_marginLeft="@dimen/md_keyline"
+        android:layout_toEndOf="@+id/list_image"
+        android:layout_marginStart="@dimen/md_keyline"
         android:textColor="@color/dark_grey"
         android:textSize="@dimen/list_body"
         android:textAppearance="?attr/textAppearanceListItem"
         android:ellipsize="end"
         android:singleLine="true"
-        tools:text="Kebutuhan kalori harian : 2400 kalori"/>
+        tools:text="Daily Calorie Need : 2400 KKal"/>
 
     <TextView
         android:id="@+id/list_date"
@@ -46,7 +46,7 @@
         android:text="01-01-2018"
         android:layout_below="@id/list_desc"
         android:layout_marginTop="2dp"
-        android:layout_toRightOf="@id/list_image"
+        android:layout_toEndOf="@id/list_image"
         android:layout_marginStart="@dimen/md_keyline"/>
 
 </RelativeLayout>

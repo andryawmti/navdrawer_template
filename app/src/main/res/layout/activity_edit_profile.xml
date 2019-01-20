@@ -176,17 +176,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="Weight"
+                    android:text="Height"
                     android:textSize="@dimen/label_size"/>
 
                 <EditText
-                    android:id="@+id/etWeight"
+                    android:id="@+id/etHeight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:inputType="number"
-                    android:hint="56 Kg"
+                    android:hint="156 cm"
                     android:background="@android:color/transparent"/>
 
             </RelativeLayout>
@@ -247,7 +247,7 @@
 
                 <EditText
                     android:layout_below="@+id/tvEditEmail"
-                    android:id="@+id/etEmail"
+                    android:id="@+id/etEditEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"

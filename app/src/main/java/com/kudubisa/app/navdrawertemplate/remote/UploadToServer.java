@@ -1,5 +1,6 @@
 package com.kudubisa.app.navdrawertemplate.remote;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
@@ -26,11 +27,11 @@ import static android.view.View.GONE;
  */
 
 public class UploadToServer extends AsyncTask<Void, Integer, String> {
-    private static final String BASE_URL = "https://wahid.kudubisa.com";
+    private static final String TAG = "upload";
 
-    private String TAG = "upload";
+    @SuppressLint("StaticFieldLeak")
     private ProgressBar mProgressBar;
-    private long totalSize = 0;
+
     private ResultUpload mResultUpload;
     private AndroidMultiPartEntity entity;
     private String url;
@@ -60,28 +61,28 @@ public class UploadToServer extends AsyncTask<Void, Integer, String> {
 
     @SuppressWarnings("deprecation")
     private String uploadFile() {
-        String responseString = null;
+        String responseString;
 
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(BASE_URL+url);
+        HttpPost httppost = new HttpPost(Common.getApiUrl(this.url));
         try {
 
-            totalSize = entity.getContentLength();
+            long totalSize = entity.getContentLength();
+
             httppost.setEntity(entity);
+
             // Making server call
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity r_entity = response.getEntity();
 
             int statusCode = response.getStatusLine().getStatusCode();
+
             if (statusCode == 200) {
                 // Server response
                 responseString = EntityUtils.toString(r_entity);
             } else {
-                responseString = "Error occurred! Http Status Code: "
-                        + statusCode;
+                responseString = "Error occurred! Http Status Code: " + statusCode;
             }
-        } catch (ClientProtocolException e) {
-            responseString = e.toString();
         } catch (IOException e) {
             responseString = e.toString();
         }

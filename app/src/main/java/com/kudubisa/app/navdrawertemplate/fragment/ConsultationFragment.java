@@ -45,25 +45,24 @@ public class ConsultationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ((MainActivity) getActivity()).setActionbarTitle("Riwayat Konsultasi");
-        common = new Common();
+
         context = getContext();
+
         view = inflater.inflate(R.layout.fragment_consultation, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.rvConsultationList);
-        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        recyclerView = view.findViewById(R.id.rvConsultationList);
+        progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
         initRecyclerView();
         return view;
     }
 
     private void initRecyclerView(){
-        String url = "/api/consultations";
+        String url = "/consultation/user/";
         String userId = "";
-        String apiToken = "";
         try {
-            JSONObject userJson = new JSONObject(common.getUserRaw(context));
+            JSONObject userJson = new JSONObject(Common.getUserRaw(context));
             userId = userJson.getString("id");
-            apiToken = userJson.getString("api_token");
-            url += "/"+userId+"?api_token="+apiToken;
+            url += userId;
             JSONObject jsonParam = new JSONObject();
             MyHTTPRequest httpRequest = new MyHTTPRequest(context, view, url, "GET", jsonParam, response, progressBar);
             httpRequest.execute();
@@ -76,8 +75,7 @@ public class ConsultationFragment extends Fragment {
         @Override
         public void response(String body, View view) {
             try {
-                JSONObject jsonBody = new JSONObject(body);
-                JSONArray jsonArray = jsonBody.optJSONArray("consultation_list");
+                JSONArray jsonArray = new JSONArray(body);
                 consultationList = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.optJSONObject(i);
@@ -85,9 +83,9 @@ public class ConsultationFragment extends Fragment {
                     consultation.setId(jsonObject.getString("id"));
                     consultation.setUserId(jsonObject.getString("user_id"));
                     consultation.setActivity(jsonObject.getString("activity"));
-                    consultation.setCalorie(jsonObject.getString("calorie"));
+                    consultation.setCalorie(jsonObject.getString("calorie_need"));
                     consultation.setPregnancyAge(jsonObject.getString("pregnancy_age"));
-                    consultation.setSleepTime(jsonObject.getString("sleep_time"));
+                    consultation.setSleepTime(jsonObject.getString("bed_time"));
                     consultation.setWeight(jsonObject.getString("weight"));
                     consultation.setCreatedAt(jsonObject.getString("created_at"));
                     consultation.setUpdatedAt(jsonObject.getString("updated_at"));

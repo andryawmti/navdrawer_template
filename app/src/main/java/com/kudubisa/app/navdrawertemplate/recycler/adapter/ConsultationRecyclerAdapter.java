@@ -25,7 +25,6 @@ import java.util.List;
 
 public class ConsultationRecyclerAdapter extends RecyclerView.Adapter<ConsultationRecyclerAdapter.ViewHolder>{
     private Context context;
-    private View view;
     private List<Consultation> consultationList;
 
     public ConsultationRecyclerAdapter(List<Consultation> consultationList) {
@@ -35,15 +34,19 @@ public class ConsultationRecyclerAdapter extends RecyclerView.Adapter<Consultati
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
-        view = LayoutInflater.from(context).inflate(R.layout.item_consultation_list, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_consultation_list, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+
         final Consultation consultation = consultationList.get(position);
-        String listTitle = "Usia kandungan : "+consultation.getPregnancyAge()+" minggu";
-        String listDesc = "Kebutuhan kalori hairan : "+consultation.getCalorie()+" kalori";
+
+        String listTitle = "Pregnancy Age : " + consultation.getPregnancyAge() + " Week(s)";
+
+        String listDesc = "Daily Calorie Need : " + consultation.getCalorie() + " KKal";
+
         holder.listTitle.setText(listTitle);
         holder.listDescription.setText(listDesc);
         holder.listDate.setText(consultation.getCreatedAt());
@@ -53,6 +56,7 @@ public class ConsultationRecyclerAdapter extends RecyclerView.Adapter<Consultati
             public void onClick(View v) {
                 Intent intent = new Intent(context, ConsultationDetailActivity.class);
                 intent.putExtra("calorie", consultation.getCalorie());
+                intent.putExtra("consultation_id", consultation.getId());
                 context.startActivity(intent);
             }
         });
@@ -68,10 +72,10 @@ public class ConsultationRecyclerAdapter extends RecyclerView.Adapter<Consultati
         ImageView listPicture;
         public ViewHolder(View itemView) {
             super(itemView);
-            listPicture = (ImageView) itemView.findViewById(R.id.list_image);
-            listTitle = (TextView) itemView.findViewById(R.id.list_title);
-            listDescription = (TextView) itemView.findViewById(R.id.list_desc);
-            listDate = (TextView) itemView.findViewById(R.id.list_date);
+            listPicture = itemView.findViewById(R.id.list_image);
+            listTitle = itemView.findViewById(R.id.list_title);
+            listDescription = itemView.findViewById(R.id.list_desc);
+            listDate = itemView.findViewById(R.id.list_date);
         }
     }
 }

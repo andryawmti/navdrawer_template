@@ -61,7 +61,7 @@
             android:id="@+id/tvConsultation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Konsultasi"
+            android:text="Consult History"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp" />
 
@@ -91,7 +91,7 @@
             android:id="@+id/tvMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Menu Makan"
+            android:text="Healthy Menu"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp" />
 
@@ -101,6 +101,7 @@
         android:id="@+id/llTips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="50dp"
         android:gravity="center"
         android:orientation="vertical"
@@ -119,7 +120,7 @@
             android:id="@+id/tvTips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tips Ibu Hamil"
+            android:text="Tips For Mom"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp" />
 
@@ -129,7 +130,7 @@
         android:id="@+id/llProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginTop="50dp"
         android:gravity="center"
         android:orientation="vertical"
@@ -149,10 +150,23 @@
             android:id="@+id/tvProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Profile"
+            android:text="Mom's Profile"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:text="SmartNutri"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

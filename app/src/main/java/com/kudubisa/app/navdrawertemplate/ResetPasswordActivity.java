@@ -38,10 +38,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
     @NotEmpty(message = "Email is required")
     private EditText etEmail;
 
-    private Button btnSave;
     private ProgressBar progressBar;
     private View mView;
-    private Common common;
     private Context context;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,10 +50,10 @@ public class ResetPasswordActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
-        etEmail = (EditText) findViewById(R.id.etEmail);
-        btnSave = (Button) findViewById(R.id.btnSave);
+        etEmail = findViewById(R.id.etEmail);
+        Button btnSave = findViewById(R.id.btnSave);
         mView = btnSave;
 
         validator = new Validator(this);
@@ -67,7 +65,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 validator.validate();
             }
         });
-        common = new Common();
         context = this;
     }
 
@@ -111,7 +108,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
     private JSONObject getProfile(){
         JSONObject user;
         try {
-            user = new JSONObject(common.getUserRaw(this));
+            user = new JSONObject(Common.getUserRaw(this));
             return user;
         } catch (JSONException e) {
             e.printStackTrace();

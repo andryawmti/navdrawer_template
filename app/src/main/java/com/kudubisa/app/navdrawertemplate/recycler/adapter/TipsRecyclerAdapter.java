@@ -1,6 +1,7 @@
 package com.kudubisa.app.navdrawertemplate.recycler.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.kudubisa.app.navdrawertemplate.R;
+import com.kudubisa.app.navdrawertemplate.TipsDetailActivity;
 import com.kudubisa.app.navdrawertemplate.model.Tips;
 import com.kudubisa.app.navdrawertemplate.remote.Common;
 
@@ -23,12 +25,10 @@ import java.util.List;
 public class TipsRecyclerAdapter extends RecyclerView.Adapter<TipsRecyclerAdapter.ViewHolder> {
     private List<Tips> tipsList;
     private Context context;
-    private Common common;
 
     public TipsRecyclerAdapter(List<Tips> tipsList, Context context) {
         this.tipsList = tipsList;
         this.context = context;
-        this.common = new Common();
     }
 
     @Override
@@ -39,20 +39,30 @@ public class TipsRecyclerAdapter extends RecyclerView.Adapter<TipsRecyclerAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Tips tips = tipsList.get(position);
+        final Tips tips = tipsList.get(position);
         holder.title.setText(tips.getTitle());
         holder.body.setText(tips.getBody());
+
         if (tips.getPicture().equals("null")) {
             holder.picture.setImageDrawable(context.getDrawable(R.drawable.a));
         } else {
-            String picUrl = common.getFullUrl(tips.getPicture());
+            String picUrl = Common.getFullUrl(tips.getPicture());
             Glide.with(context).load(picUrl).into(holder.picture);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, TipsDetailActivity.class);
+                intent.putExtra("id", tips.getId());
+                intent.putExtra("title", tips.getTitle());
+                intent.putExtra("content", tips.getBody());
+                intent.putExtra("author_id", tips.getAuthorId());
+                intent.putExtra("author_name", tips.getAuthorName());
+                intent.putExtra("photo", tips.getPicture());
+                intent.putExtra("created_at", tips.getCreatedAt());
+                intent.putExtra("updated_at", tips.getUpdatedAt());
+                context.startActivity(intent);
             }
         });
     }
@@ -62,15 +72,15 @@ public class TipsRecyclerAdapter extends RecyclerView.Adapter<TipsRecyclerAdapte
         return tipsList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder{
         TextView title;
         TextView body;
         ImageView picture;
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.tips_title);
-            body = (TextView) itemView.findViewById(R.id.tips_body);
-            picture = (ImageView) itemView.findViewById(R.id.tips_image);
+            title = itemView.findViewById(R.id.tips_title);
+            body = itemView.findViewById(R.id.tips_body);
+            picture = itemView.findViewById(R.id.tips_image);
         }
     }
 }

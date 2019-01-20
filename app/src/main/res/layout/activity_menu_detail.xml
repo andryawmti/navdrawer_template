@@ -53,25 +53,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingStart="@dimen/article_keylines"
-            android:paddingTop="@dimen/md_keyline"
-            android:paddingEnd="@dimen/md_keyline"
+            android:padding="@dimen/md_keyline"
             android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorAccent"
-                android:text="Calorie"
-                android:textSize="@dimen/article_title"
-                android:layout_marginBottom="@dimen/md_keyline"/>
-
-            <TextView
-                android:id="@+id/calorie"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/menu_calorie"
-                android:layout_marginBottom="@dimen/md_keyline"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -79,16 +62,86 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/article_title"
                 android:layout_marginBottom="@dimen/md_keyline"
-                android:text="Description"/>
+                android:text="@string/description"/>
 
             <TextView
-                android:id="@+id/description"
+                android:id="@+id/tvDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/menu_description"
                 android:layout_marginBottom="@dimen/md_keyline"/>
 
-            <TextView
+            <RelativeLayout
+                android:id="@+id/rlNutrition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvNutrition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:text="@string/nutrition"
+                    android:textSize="@dimen/article_title"
+                    android:layout_marginBottom="@dimen/md_keyline"/>
+
+                <TextView
+                    android:id="@+id/tvCalorie"
+                    android:layout_below="@+id/tvNutrition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/calorie"
+                    android:layout_marginBottom="@dimen/md_keyline"/>
+
+                <TextView
+                    android:id="@+id/tvCarbohydrate"
+                    android:layout_below="@+id/tvCalorie"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/carbohydrate"
+                    android:layout_marginBottom="@dimen/md_keyline"/>
+
+                <TextView
+                    android:id="@+id/tvProtein"
+                    android:layout_below="@+id/tvCarbohydrate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/protein"
+                    android:layout_marginBottom="@dimen/md_keyline"/>
+
+                <TextView
+                    android:id="@+id/tvFat"
+                    android:layout_below="@+id/tvProtein"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fat"
+                    android:layout_marginBottom="@dimen/md_keyline"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlIngredient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvIngredient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:text="@string/ingredient"
+                    android:textSize="@dimen/article_title"
+                    android:layout_marginBottom="@dimen/md_keyline"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_below="@id/tvIngredient"
+                    android:id="@+id/rvIngredientList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </RelativeLayout>
+
+            <!--<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorAccent"
@@ -100,9 +153,14 @@
                 android:id="@+id/cooking_instruction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/menu_cooking_instruction"/>
+                android:text="@string/menu_cooking_instruction"/>-->
 
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
 </android.support.design.widget.CoordinatorLayout>

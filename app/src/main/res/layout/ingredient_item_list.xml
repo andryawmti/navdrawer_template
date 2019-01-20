@@ -4,47 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
-    android:padding="@dimen/md_keyline">
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/list_image"
-        android:layout_width="@dimen/avatar_size"
-        android:layout_height="@dimen/avatar_size"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/vegan_tofu_tacos"/>
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <TextView
-        android:id="@+id/list_title"
+        android:id="@+id/ingredient_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/list_image"
-        android:layout_marginLeft="@dimen/md_keyline"
-        tools:text="@string/menu_title"
+        tools:text="Ingredient Name"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textSize="@dimen/article_subheading"/>
 
     <TextView
-        android:id="@+id/list_desc"
+        android:id="@+id/ingredient_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/list_title"
-        android:layout_toRightOf="@+id/list_image"
-        android:layout_marginLeft="@dimen/md_keyline"
+        android:layout_below="@+id/ingredient_name"
         android:textColor="@color/grey"
         android:textSize="@dimen/list_body"
         android:textAppearance="?attr/textAppearanceListItem"
         android:ellipsize="end"
         android:singleLine="true"
-        tools:text="@string/menu_desc"/>
+        tools:text="Sumber Kabrbohidrat"/>
 
 
     <TextView
-        android:id="@+id/list_calorie"
+        android:id="@+id/gram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:textAppearance="?attr/textAppearanceListItem"
-        android:text="@string/_650_kkal"/>
+        tools:text="gr"/>
+
+    <TextView
+        android:id="@+id/ingredient_weight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/gram"
+        android:layout_marginEnd="5dp"
+        android:textAppearance="?attr/textAppearanceListItem"
+        tools:text="560"/>
 
 </RelativeLayout>

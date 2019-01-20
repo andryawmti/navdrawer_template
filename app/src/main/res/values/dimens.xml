@@ -30,4 +30,5 @@
     <dimen name="drawable_padding">12dp</dimen>
     <dimen name="text_input_margin_top">15dp</dimen>
     <dimen name="home_icon">60dp</dimen>
+    <dimen name="icon_size">20dp</dimen>
 </resources>
