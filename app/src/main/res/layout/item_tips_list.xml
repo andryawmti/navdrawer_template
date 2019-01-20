@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="@dimen/md_keyline">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/tips_image"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/vegan_tofu_tacos"/>
+
+    <TextView
+        android:id="@+id/tips_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tips_image"
+        android:layout_marginLeft="@dimen/md_keyline"
+        tools:text="@string/tips_title"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textSize="@dimen/article_subheading"/>
+
+    <TextView
+        android:id="@+id/tips_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tips_title"
+        android:layout_toRightOf="@+id/tips_image"
+        android:layout_marginLeft="@dimen/md_keyline"
+        android:textColor="@color/grey"
+        android:textSize="@dimen/list_body"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:ellipsize="end"
+        android:singleLine="true"
+        tools:text="@string/tips_body"/>
+
+</RelativeLayout>

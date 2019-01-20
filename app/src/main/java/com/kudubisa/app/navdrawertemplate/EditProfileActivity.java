@@ -73,11 +73,10 @@ public class EditProfileActivity extends AppCompatActivity {
 
     int PICK_IMAGE_REQUEST=1;
     Uri filePath=null;
-    private Bitmap mImageBitmap;
 
     private final static String LOGIN_PREFS = "login_prefs";
     private final static String EMAIL = "email";
-    private final static  String USER_RAW = "userRaw";
+    private final static  String USER_RAW = "user_raw";
 
     SharedPreferences preferences;
 
@@ -90,8 +89,8 @@ public class EditProfileActivity extends AppCompatActivity {
     @NotEmpty(message = "Address should not be empty")
     EditText etAddress;
 
-    @NotEmpty(message = "Weight should not be empty")
-    EditText etWeight;
+    @NotEmpty(message = "Height should not be empty")
+    EditText etHeight;
 
     @Email(message = "Email not valid")
     EditText etEmail;
@@ -109,8 +108,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
     Context context;
 
-    Common common;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,31 +115,30 @@ public class EditProfileActivity extends AppCompatActivity {
 
         context = getApplicationContext();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Edit Profile");
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        common = new Common();
+        progressBar = findViewById(R.id.progressBar);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        tvBirthdate = findViewById(R.id.tvBirthdate);
+        tvPregnancyStart = findViewById(R.id.tvPregnancyStart);
+        TextView tvEditFotoProfile = findViewById(R.id.edit_foto_profile);
+        fotoProfile = findViewById(R.id.foto_profile);
 
-        tvBirthdate = (TextView) findViewById(R.id.tvBirthdate);
-        tvPregnancyStart = (TextView) findViewById(R.id.tvPregnancyStart);
-        TextView tvEditFotoProfile = (TextView) findViewById(R.id.edit_foto_profile);
-        fotoProfile = (ImageView) findViewById(R.id.foto_profile);
+        RelativeLayout relEditAddress = findViewById(R.id.rel_edit_address);
+        RelativeLayout relEditEmail = findViewById(R.id.rel_edit_email);
+        RelativeLayout relEditPassword = findViewById(R.id.rel_edit_password);
+        RelativeLayout relEditBirthdate = findViewById(R.id.relEditBirthDate);
+        RelativeLayout relEditPregnancyStart = findViewById(R.id.relEditPregnancyStart);
 
-        RelativeLayout relEditAddress = (RelativeLayout) findViewById(R.id.rel_edit_address);
-        RelativeLayout relEditEmail = (RelativeLayout) findViewById(R.id.rel_edit_email);
-        RelativeLayout relEditPassword = (RelativeLayout) findViewById(R.id.rel_edit_password);
-        RelativeLayout relEditBirthdate = (RelativeLayout) findViewById(R.id.relEditBirthDate);
-        RelativeLayout relEditPregnancyStart = (RelativeLayout) findViewById(R.id.relEditPregnancyStart);
-
-        etAddress = (EditText) findViewById(R.id.etAddress);
-        etFirstName = (EditText) findViewById(R.id.etEditFirstName);
-        etLastName = (EditText) findViewById(R.id.etEditLastName);
-        etWeight = (EditText) findViewById(R.id.etWeight);
-        etEmail = (EditText) findViewById(R.id.etEmail);
+        etAddress = findViewById(R.id.etAddress);
+        etFirstName = findViewById(R.id.etEditFirstName);
+        etLastName = findViewById(R.id.etEditLastName);
+        etEmail = findViewById(R.id.etEditEmail);
+        etHeight = findViewById(R.id.etHeight);
 
         relEditAddress.setOnClickListener(onClickListener);
         relEditEmail.setOnClickListener(onClickListener);
@@ -152,7 +148,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         tvEditFotoProfile.setOnClickListener(onClickListener);
 
-        Button btnSave = (Button) findViewById(R.id.btnSaveProfile);
+        Button btnSave = findViewById(R.id.btnSaveProfile);
         view = btnSave;
         btnSave.setOnClickListener(onClickListener);
 
@@ -170,10 +166,10 @@ public class EditProfileActivity extends AppCompatActivity {
             tvPregnancyStart.setText(userJson.getString("pregnancy_start_at"));
             etFirstName.setText( userJson.getString("first_name"));
             etLastName.setText(userJson.getString("last_name"));
-            etWeight.setText(String.valueOf(userJson.getInt("weight")));
+            etHeight.setText(userJson.getString("height"));
             etAddress.setText(userJson.getString("address"));
             etEmail.setText(userJson.getString("email"));
-            String photoUrl = common.getFullUrl(userJson.getString("photo"));
+            String photoUrl = Common.getFullUrl(userJson.getString("photo"));
             Glide.with(context)
                     .load(photoUrl)
                     .into(fotoProfile);
@@ -207,7 +203,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     showHideEditAddress(R.id.etAddress, R.id.ivEditAddress);
                     break;
                 case R.id.rel_edit_email:
-                    showHideEditAddress(R.id.etEmail, R.id.ivEditEmail);
+                    showHideEditAddress(R.id.etEditEmail, R.id.ivEditEmail);
                     break;
                 case R.id.rel_edit_password:
                     Intent intent = new Intent(EditProfileActivity.this, EditPasswordActivity.class);
@@ -226,11 +222,10 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void showHideEditAddress(int editText, int imgView){
-        final EditText edText = (EditText) findViewById(editText);
-        ImageView imView = (ImageView) findViewById(imgView);
+        final EditText edText = findViewById(editText);
+        ImageView imView = findViewById(imgView);
         int v = edText.getVisibility();
         if (v == View.GONE) {
-            Log.d("fuck", "you");
             imView.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
                     R.drawable.ic_keyboard_arrow_down_black_24dp, getTheme()));
             edText.setAlpha(0.0f);
@@ -245,22 +240,22 @@ public class EditProfileActivity extends AppCompatActivity {
                         }
                     });
 
-        }else{
-//            Log.d("fuck", "her");
-//            imView.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-//                    R.drawable.ic_chevron_right_black_24dp, getTheme()));
-//            edText.setAlpha(1.0f);
-//            edText.animate()
-//                    .alpha(1.0f)
-//                    .setDuration(300)
-//                    .setListener(new AnimatorListenerAdapter() {
-//                        @Override
-//                        public void onAnimationStart(Animator animation) {
-//                            super.onAnimationStart(animation);
-//                            edText.setVisibility(View.GONE);
-//                        }
-//                    });
-        }
+        }/*else{
+            Log.d("fuck", "her");
+            imView.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ic_chevron_right_black_24dp, getTheme()));
+            edText.setAlpha(1.0f);
+            edText.animate()
+                    .alpha(1.0f)
+                    .setDuration(300)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            edText.setVisibility(View.GONE);
+                        }
+                    });
+        }*/
     }
 
     Validator.ValidationListener validationListener = new Validator.ValidationListener() {
@@ -287,18 +282,6 @@ public class EditProfileActivity extends AppCompatActivity {
         saveProfile();
     }
 
-    private String getUserRaw(){
-        preferences = getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
-        return preferences.getString(USER_RAW,"");
-    }
-
-    private void setUserRaw(String userRaw){
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(EMAIL, etEmail.getText().toString());
-        editor.putString(USER_RAW, userRaw);
-        editor.commit();
-    }
-
     /**
      * Get Profile
      * @return JSONObject
@@ -306,7 +289,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private JSONObject getProfile(){
         JSONObject user;
         try {
-            user = new JSONObject(getUserRaw());
+            user = new JSONObject(Common.getUserRaw(context));
             return user;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -316,25 +299,28 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void saveProfile(){
         JSONObject user = getProfile();
-        String apiToken = "";
         String id = "";
-        try {
-            apiToken = user.getString("api_token");
-            id = user.getString("id");
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+        if (user != null) {
+            try {
+                id = user.getString("id");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
-        String url = "/api/user/"+id+"?api_token="+apiToken;
+
+        String url = "/user/"+id;
 
         JSONObject userJson = new JSONObject();
+
         try {
             userJson.put("first_name", etFirstName.getText().toString());
             userJson.put("last_name", etLastName.getText().toString());
-            userJson.put("address", etAddress.getText().toString());
             userJson.put("email", etEmail.getText().toString());
             userJson.put("birth_date", tvBirthdate.getText().toString());
-            userJson.put("pregnancy_start", tvPregnancyStart.getText().toString());
-            userJson.put("weight", etWeight.getText().toString());
+            userJson.put("address", etAddress.getText().toString());
+            userJson.put("pregnancy_start_at", tvPregnancyStart.getText().toString());
+            userJson.put("height", etHeight.getText().toString());
 
             MyHTTPRequest myHTTPRequest = new MyHTTPRequest(this, view, url,
                     "POST", userJson, httpResponse, progressBar);
@@ -349,7 +335,7 @@ public class EditProfileActivity extends AppCompatActivity {
         public void response(String body, View view) {
             try {
                 JSONObject jsonObject = new JSONObject(body);
-                setUserRaw(jsonObject.getString("user"));
+                Common.setUserRaw(jsonObject.getString("user"), context);
                 Toast.makeText(EditProfileActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -370,9 +356,9 @@ public class EditProfileActivity extends AppCompatActivity {
     /**
      * This is a callback, for showGalleryIntent().
      * It will set the fotoProfile ImageView with the new picture from gallery.
-     * @param requestCode
-     * @param resultCode
-     * @param data
+     * @param requestCode int
+     * @param resultCode int
+     * @param data Intent
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -380,12 +366,12 @@ public class EditProfileActivity extends AppCompatActivity {
         if(requestCode==PICK_IMAGE_REQUEST && resultCode==RESULT_OK && data !=null && data.getData() != null){
             filePath = data.getData();
             try {
-                mImageBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(),
+                Bitmap mImageBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(),
                         data.getData());
                 fotoProfile.setImageBitmap(mImageBitmap);
                 try{
-                    String realPath = common.getRealPathFromURI(filePath, context);
-                    uploadFotoProfile(realPath);
+                    String realPath = Common.getRealPathFromURI(filePath, context);
+                    uploadPhotoProfile(realPath);
                 }catch (Exception e){
                     e.printStackTrace();
                     Log.e("FilePathError", e.getLocalizedMessage()+", "+e.getMessage()+", caused by:"+e.getCause());
@@ -398,49 +384,53 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     /**
-     * Upload Foto Profile to Server
-     * @param mFilePath
+     * Upload photo profile to server
+     * @param mFilePath String
      */
-    private void uploadFotoProfile(String mFilePath){
-        AndroidMultiPartEntity entity = new AndroidMultiPartEntity(
-                new AndroidMultiPartEntity.ProgressListener() {
+    private void uploadPhotoProfile(String mFilePath){
 
-                    @Override
-                    public void transferred(long num) {}
-                });
+        AndroidMultiPartEntity.ProgressListener progressListener = new AndroidMultiPartEntity.ProgressListener() {
+            @Override
+            public void transferred(long num) {
+                /*We doing nothing for now, but yeah...it's necessary to create this listener*/
+            }
+        };
+
+        AndroidMultiPartEntity entity = new AndroidMultiPartEntity(progressListener);
 
         JSONObject userJson = getProfile();
-        String apiToken = "";
         String id = "";
-        try {
-            apiToken = userJson.getString("api_token");
-            id = userJson.getString("id");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
+        if (userJson != null) {
+            try {
+                id = userJson.getString("id");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         File sourceFile = new File(mFilePath);
-        // Adding file data to http body
+
+        /*Adding file data to http body*/
         try {
-            entity.addPart("image", new FileBody(sourceFile));
+            entity.addPart("photo", new FileBody(sourceFile));
             entity.addPart("id", new StringBody(id));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        String url = "/api/user/"+id+"/upload-photo?api_token="+apiToken;
+
+        String url = "/user/"+id+"/upload-photo";
         UploadToServer uploadToServer = new UploadToServer(progressBar, entity, new UploadToServer.ResultUpload() {
             @Override
             public void resultUploadExecute(String result) {
                 try {
                     JSONObject jsonObject = new JSONObject(result);
                     Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
-                    if (!jsonObject.getBoolean("error")) {
-                        Log.d("result", result);
+                    if (jsonObject.getBoolean("success")) {
                         try {
-                            setUserRaw(jsonObject.getString("user"));
+                            Common.setUserRaw(jsonObject.getString("user"), context);
                         } catch (Exception e){
                             e.printStackTrace();
-                            Log.e("SetUserRaw", e.getLocalizedMessage()+", caused:"+e.getCause());
+                            Log.e("SetUserRaw", e.getLocalizedMessage()+", caused by:"+e.getCause());
                         }
                     }
                 } catch (JSONException e) {
@@ -459,22 +449,21 @@ public class EditProfileActivity extends AppCompatActivity {
             return;
         }
 
-        if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_EXTERNAL_STORAGE)){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {}
 
+        String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
 
-        }
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                STORAGE_PERMISSION_CODE);
+        ActivityCompat.requestPermissions(this, permissions, STORAGE_PERMISSION_CODE);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode==STORAGE_PERMISSION_CODE){
-            if(grantResults.length>0&&grantResults[0] == PackageManager.PERMISSION_DENIED){
+
+        if (requestCode == STORAGE_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 Toast.makeText(context,"Permission denied",Toast.LENGTH_LONG).show();
-            }else{
+            } else {
                 Toast.makeText(context,"Permission Granted", Toast.LENGTH_LONG).show();
             }
         }
