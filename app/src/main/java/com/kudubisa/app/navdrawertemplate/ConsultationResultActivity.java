@@ -92,6 +92,7 @@ public class ConsultationResultActivity extends AppCompatActivity {
                 for (int i = 0; i < menuSuggestion.length(); i++) {
                     JSONObject menuJson = menuSuggestion.getJSONObject(i);
                     Menu menu = new Menu();
+                    menu.setId(menuJson.getString("id"));
                     menu.setAddedBy(menuJson.getString("admin_name"));
                     menu.setName(menuJson.getString("name"));
                     menu.setCalorie(menuJson.getString("calorie"));
