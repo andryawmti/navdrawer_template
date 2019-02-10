@@ -147,7 +147,6 @@ public class SignUpActivity extends AppCompatActivity {
                     if (result.getBoolean("success")) {
                         Toast.makeText(context, result.getString("message"), Toast.LENGTH_LONG).show();
                         String userJsonRaw = result.getString("user");
-                        Log.d("USER :", userJsonRaw);
                         Common.setUserRaw(userJsonRaw, context);
                         Common.setEmail(etEmail.getText().toString(), context);
                         Common.setPassword(etPassword.getText().toString(), context);
