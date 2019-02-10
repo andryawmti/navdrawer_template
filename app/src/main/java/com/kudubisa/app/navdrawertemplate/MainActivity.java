@@ -209,7 +209,11 @@ public class MainActivity extends AppCompatActivity {
         try {
             JSONObject jsonObject = new JSONObject(Common.getUserRaw(context));
             String photoPath = Common.getFullUrl(jsonObject.getString("photo"));
-            Glide.with(context).load(photoPath).into(profilePicture);
+
+            if (!photoPath.equals("null")) {
+                Glide.with(context).load(photoPath).into(profilePicture);
+            }
+
             String fullName = jsonObject.getString("first_name") + " " + jsonObject.getString("last_name");
             profileName.setText(fullName);
         } catch (JSONException e) {

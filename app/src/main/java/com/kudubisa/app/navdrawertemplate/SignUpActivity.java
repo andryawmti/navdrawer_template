@@ -132,7 +132,7 @@ public class SignUpActivity extends AppCompatActivity {
             userSignup.put("first_name", etFirstName.getText().toString());
             userSignup.put("last_name", etLastName.getText().toString());
             userSignup.put("email", etEmail.getText().toString());
-            userSignup.put("password", etPassword);
+            userSignup.put("password", etPassword.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
