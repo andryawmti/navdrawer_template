@@ -1,6 +1,7 @@
 package com.kudubisa.app.navdrawertemplate;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -60,23 +61,26 @@ public class SignUpActivity extends AppCompatActivity {
     private View view;
     private Context context;
 
-    private Common common;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Sign Up");
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        btnSignup = (Button) findViewById(R.id.btnSignup);
-        etFirstName = (EditText) findViewById(R.id.etFirstName);
-        etLastName = (EditText) findViewById(R.id.etLastName);
-        etEmail = (EditText) findViewById(R.id.etEmail);
-        etPassword = (EditText) findViewById(R.id.etPassword);
-        etConfirm = (EditText) findViewById(R.id.etConfirmPassword);
+
+        btnSignup = findViewById(R.id.btnSignup);
+        etFirstName = findViewById(R.id.etFirstName);
+        etLastName = findViewById(R.id.etLastName);
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
+        etConfirm = findViewById(R.id.etConfirmPassword);
 
         validator = new Validator(this);
         validator.setValidationListener(validationListener);
@@ -90,7 +94,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         view = btnSignup;
         context = getApplicationContext();
-        common = new Common();
     }
 
     Validator.ValidationListener validationListener = new Validator.ValidationListener() {
@@ -141,7 +144,16 @@ public class SignUpActivity extends AppCompatActivity {
 
                 try {
                     JSONObject result = new JSONObject(body);
-                    Toast.makeText(context, result.getString("message"), Toast.LENGTH_LONG).show();
+                    if (result.getBoolean("success")) {
+                        Toast.makeText(context, result.getString("message"), Toast.LENGTH_LONG).show();
+                        String userJsonRaw = result.getString("user");
+                        Common.setUserRaw(userJsonRaw, context);
+                        Common.setEmail(etEmail.getText().toString(), context);
+                        Common.setPassword(etPassword.getText().toString(), context);
+                        ifSignUpSuccess();
+                    } else {
+                        Toast.makeText(context, result.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -150,6 +162,13 @@ public class SignUpActivity extends AppCompatActivity {
         }, progressBar);
 
         myHTTPRequest.execute();
+    }
+
+    private void ifSignUpSuccess(){
+        Context context = SignUpActivity.this;
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+        SignUpActivity.this.finish();
     }
 
 }
