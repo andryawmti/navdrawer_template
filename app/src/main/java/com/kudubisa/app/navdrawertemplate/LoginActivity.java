@@ -122,9 +122,12 @@ public class LoginActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(body);
 
                 if (jsonObject.getBoolean("success")){
+                    Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     String userJsonRaw = jsonObject.getString("user");
                     modifyPreferences(userJsonRaw);
                     ifLoginSuccess();
+                } else {
+                    Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -61,7 +61,6 @@ public class SignUpActivity extends AppCompatActivity {
     private View view;
     private Context context;
 
-    private Common common;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +94,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         view = btnSignup;
         context = getApplicationContext();
-        common = new Common();
     }
 
     Validator.ValidationListener validationListener = new Validator.ValidationListener() {
@@ -146,12 +144,16 @@ public class SignUpActivity extends AppCompatActivity {
 
                 try {
                     JSONObject result = new JSONObject(body);
-                    Toast.makeText(context, result.getString("message"), Toast.LENGTH_LONG).show();
-                    String userJsonRaw = result.getString("user");
-                    Common.setUserRaw(userJsonRaw, context);
-                    Common.setEmail(etEmail.getText().toString(), context);
-                    Common.setPassword(etPassword.getText().toString(), context);
-                    ifSignUpSuccess();
+                    if (result.getBoolean("success")) {
+                        Toast.makeText(context, result.getString("message"), Toast.LENGTH_LONG).show();
+                        String userJsonRaw = result.getString("user");
+                        Common.setUserRaw(userJsonRaw, context);
+                        Common.setEmail(etEmail.getText().toString(), context);
+                        Common.setPassword(etPassword.getText().toString(), context);
+                        ifSignUpSuccess();
+                    } else {
+                        Toast.makeText(context, result.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
