@@ -208,10 +208,10 @@ public class MainActivity extends AppCompatActivity {
     public void setNavHeaderProfile() {
         try {
             JSONObject jsonObject = new JSONObject(Common.getUserRaw(context));
-            String photoPath = Common.getFullUrl(jsonObject.getString("photo"));
+            String photoPath = jsonObject.getString("photo");
 
             if (!photoPath.equals("null")) {
-                Glide.with(context).load(photoPath).into(profilePicture);
+                Glide.with(context).load(Common.getFullUrl(photoPath)).into(profilePicture);
             }
 
             String fullName = jsonObject.getString("first_name") + " " + jsonObject.getString("last_name");

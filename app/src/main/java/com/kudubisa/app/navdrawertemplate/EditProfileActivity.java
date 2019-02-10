@@ -48,6 +48,7 @@ import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.Min;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
+import com.squareup.picasso.Picasso;
 
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -169,10 +170,11 @@ public class EditProfileActivity extends AppCompatActivity {
             etHeight.setText(userJson.getString("height"));
             etAddress.setText(userJson.getString("address"));
             etEmail.setText(userJson.getString("email"));
-            String photoUrl = Common.getFullUrl(userJson.getString("photo"));
-            Glide.with(context)
-                    .load(photoUrl)
-                    .into(fotoProfile);
+            String photoUrl = userJson.getString("photo");
+
+            if (!photoUrl.equals("null")) {
+                Picasso.get().load(Common.getFullUrl(photoUrl)).into(fotoProfile);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -88,9 +88,11 @@ public class ProfileFragment extends Fragment{
         try {
             userJson = new JSONObject(userRaw);
             String fullName = userJson.getString("first_name")+" "+userJson.getString("last_name");
-            String photoUrl = Common.getFullUrl(userJson.getString("photo"));
+            String photoUrl = userJson.getString("photo");
 
-            Picasso.get().load(photoUrl).into(profilePhoto);
+            if (!photoUrl.equals("null")) {
+                Picasso.get().load(Common.getFullUrl(photoUrl)).into(profilePhoto);
+            }
 
             tvProfileName.setText(userJson.getString("first_name"));
             tvFullName.setText(fullName);
